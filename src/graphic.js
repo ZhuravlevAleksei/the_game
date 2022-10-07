@@ -40,6 +40,8 @@ export default class GraphicsApp {
             backgroundColor: this.backgroundColor
         });
 
+        this.ticker = PIXI.Ticker.shared;
+
         document.body.appendChild(this.app.view);
     }
 
@@ -47,7 +49,7 @@ export default class GraphicsApp {
         const tx = this.paddingPx + (col * (tileWidth + this.tilePxGap));
         const ty = this.paddingPx + (row * (tileHeight + this.tilePxGap));
 
-        return {tx:tx, ty:ty};
+        return {tx:tx, ty:ty, row:row, col:col};
     }
 
     addTile(row, col, colorIndex){
@@ -74,9 +76,9 @@ export default class GraphicsApp {
     }
 
     moveTile(tile, row, col){
-        const pos = this.position(row, col);
+        const coordinate = this.position(row, col);
 
-        tile.move(pos.tx, pos.ty, row, col);
+        tile.move(coordinate, this.ticker)
     }
 }
 
@@ -108,11 +110,32 @@ class Tile{
         this.tile.destroy();
     }
 
-    move(x, y, row, col){
-        this.tile.x = x;
-        this.tile.y = y;
+    move(coordinate, ticker){
+        this.tx = coordinate.tx;
+        this.ty = coordinate.ty;
+        this.row = coordinate.row;
+        this.col = coordinate.col;
+        this.ticker = ticker;
 
-        this.col = col;
-        this.row = row;
+        this.ticker.add(this.moveHandler, this);
+    }
+
+    moveHandler(){
+        let diffX = this.tile.x - this.tx;
+        let diffY = this.tile.y - this.ty;
+
+        if((diffX == 0) && (diffY == 0)){
+            this.ticker.remove(this.moveHandler, this);
+        }
+
+        if(diffX != 0){
+            let stepX = Math.ceil((this.tx - this.tile.x) / 20);
+            this.tile.x = this.tile.x + stepX;
+        }
+
+        if(diffY != 0){
+            let stepY = Math.ceil((this.ty - this.tile.y) / 20);
+            this.tile.y = this.tile.y + stepY;
+        }
     }
 }
