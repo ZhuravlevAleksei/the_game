@@ -1,23 +1,8 @@
 const StateMachine = require("javascript-state-machine");
 import GraphicsApp from "./graphic";
 import GameBoard from "./process";
+import {conf} from "./config.js"
 
-const conf = {
-    tilesRowCount: 9,
-    blastTailCount: 2,
-
-    graphics: {
-        canvasWidth: 500, //430,
-        canvasHeight: 550, //500,
-        backgroundColor: 0xffffff,
-        paddingWidthPercent: 3,
-        tilePxGap: 1,
-
-        spritesTintSet: [
-            0x43c3fc, 0xf17ac5, 0xff617e, 0xf1d074, 0x89e36c, 0x996666,
-        ],
-    },
-};
 
 function theFall(fl) {
     for (let f = 0; f < fl.length; f++) {
@@ -73,7 +58,6 @@ function onClick() {
         }
 
         let flE = board.floorEmpty(emptyAll);
-        console.log(flE);
         theFall(flE);
 
         fillTopRow();
