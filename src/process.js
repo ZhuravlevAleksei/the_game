@@ -197,6 +197,38 @@ export default class GameBoard {
         return fl;
     }
 
+    floorEmpty(cellsPosition) {
+        cellsPosition.sort((a, b) => {
+            return a.col > b.col;
+        });
+
+        const colSliced = [];
+
+        for (let c = cellsPosition[0].col; c <= cellsPosition[cellsPosition.length - 1].col; c++) {
+            let f = cellsPosition.filter((n) => {
+                return n.col == c;
+            });
+
+            f.sort((a, b) => {
+                return a.row < b.row;
+            });
+
+            colSliced.push(f);
+        }
+
+        const fl = [];
+
+        for (let c = 0; c < colSliced.length; c++) {
+            if(colSliced[c].length == 0){
+                continue;
+            }
+
+            fl.push({ row: colSliced[c][0].row, col: colSliced[c][0].col });
+        }
+
+        return fl;
+    }
+
     fallCol(coordinate) {
         const cells = [];
         let displacement;
@@ -219,5 +251,28 @@ export default class GameBoard {
         }
 
         return cells;
+    }
+
+    searchForEmptiesInRows(row){
+        const topCells = [];
+
+        for(let c = 0; c < this.board[row].length; c++){
+            if(this.board[row][c] === undefined){
+                topCells.push({row:row, col:c});
+            }
+        }
+
+        return topCells;
+    }
+
+    searchForEmptiesInBoard(topRow){
+        let emptyAll = [];
+
+        for(let r = topRow; r < this.tilesRowCount; r++){
+            let empty = this.searchForEmptiesInRows(r);
+            emptyAll = emptyAll.concat(empty);
+        }
+
+        return emptyAll;
     }
 }
