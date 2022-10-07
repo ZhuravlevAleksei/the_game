@@ -64,6 +64,8 @@ export default class GraphicsApp {
 
         this.app.stage.addChild(tile.tile);
 
+        tile.show(this.ticker);
+
         return tile;
     }
 
@@ -90,8 +92,8 @@ class Tile{
         tile.x = x;
         tile.y = y;
 
-        tile.width = tileWidth;
-        tile.height = tileHeight;
+        tile.width = 0;
+        tile.height = 0;
 
         this.tile = tile;
         this.tile.tint = spritesTintSet[colorIndex];
@@ -137,6 +139,30 @@ class Tile{
         if(diffY != 0){
             let stepY = Math.ceil((this.ty - this.tile.y) / 10);
             this.tile.y = this.tile.y + stepY;
+        }
+    }
+
+    show(ticker){
+        this.ticker = ticker;
+        this.ticker.add(this.showHandler, this);
+    }
+
+    showHandler(){
+        let diffWidth = tileWidth - this.tile.width;
+        let diffHeight = tileHeight - this.tile.height;
+
+        if((diffWidth == 0) && (diffHeight == 0)){
+            this.ticker.remove(this.showHandler, this);
+        }
+
+        if(diffWidth != 0){
+            let stepWidth = Math.ceil((tileWidth - this.tile.width) / 2);
+            this.tile.width = this.tile.width + stepWidth;
+        }
+
+        if(diffHeight != 0){
+            let stepHeight = Math.ceil((tileHeight - this.tile.height) / 8);
+            this.tile.height = this.tile.height + stepHeight;
         }
     }
 }
