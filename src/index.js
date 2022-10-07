@@ -25,19 +25,17 @@ function onClick() {
         return;
     }
 
-    const fl = board.floor(cells);
-
     for (let i = 0; i < cells.length; i++) {
         board.cleanCell(cells[i]);
     }
 
-    for(let f = 0; f < fl.length; f++){
-        let cells = board.fallCol(fl[f].row, fl[f].col);
-        console.log(cells);
+    const fl = board.floor(cells);
 
-        for (let c = 0; c < cells.length; c++){
-            console.log(cells[c]);
-            g.moveTile(cells[c], fl[f].row--, fl[f].col)
+    for(let f = 0; f < fl.length; f++){
+        const colCells = board.fallCol(fl[f]);
+
+        for (let c = 0; c < colCells.length; c++){
+            g.moveTile(colCells[c].tile, colCells[c].to.row, colCells[c].to.col)
         }
     }
 }
@@ -46,30 +44,41 @@ const board = new GameBoard(conf);
 const g = new GraphicsApp(conf, onClick);
 g.downloadField();
 
-for (let c = 0; c < conf.tilesRowCount; c++) {
-    for (let r = 0; r < conf.tilesRowCount; r++) {
-        let t = g.addTile(r, c);
+// for (let c = 0; c < conf.tilesRowCount; c++) {
+//     for (let r = 0; r < conf.tilesRowCount; r++) {
+//         let t = g.addTile(r, c);
 
-        board.addCell(t);
-    }
-}
-// let t;
-// t = g.addTile(0, 0, 0);
-// board.addCell(t);
-// t = g.addTile(0, 1, 0);
-// board.addCell(t);
-// t = g.addTile(0, 2, 0);
-// board.addCell(t);
-// t = g.addTile(1, 0, 0);
-// board.addCell(t);
-// t = g.addTile(1, 2, 0);
-// board.addCell(t);
-// t = g.addTile(2, 0, 0);
-// board.addCell(t);
-// t = g.addTile(2, 1, 0);
-// board.addCell(t);
-// t = g.addTile(2, 2, 0);
-// board.addCell(t);
+//         board.addCell(t);
+//     }
+// }
+let t;
+t = g.addTile(0, 0, 3);
+board.addCell(t);
+t = g.addTile(0, 1, 3);
+board.addCell(t);
+t = g.addTile(0, 2, 3);
+
+board.addCell(t);
+t = g.addTile(1, 0, 1);
+board.addCell(t);
+t = g.addTile(1, 1, 1);
+board.addCell(t);
+t = g.addTile(1, 2, 0);
+
+board.addCell(t);
+t = g.addTile(2, 0, 1);
+board.addCell(t);
+t = g.addTile(2, 1, 0);
+board.addCell(t);
+t = g.addTile(2, 2, 0);
+
+board.addCell(t);
+t = g.addTile(3, 0, 1);
+board.addCell(t);
+t = g.addTile(3, 1, 1);
+board.addCell(t);
+t = g.addTile(3, 2, 0);
+board.addCell(t);
 
 const mainProc = new StateMachine({
     init: "init",
