@@ -45,21 +45,22 @@ export default class GraphicsApp {
         document.body.appendChild(this.app.view);
     }
 
-    position(row, col){
-        const tx = this.paddingPx + (col * (tileWidth + this.tilePxGap));
-        const ty = this.paddingPx + (row * (tileHeight + this.tilePxGap));
+    position(pos){
+        const tx = this.paddingPx + (pos.col * (tileWidth + this.tilePxGap));
+        const ty = this.paddingPx + (pos.row * (tileHeight + this.tilePxGap));
 
-        return {tx:tx, ty:ty, row:row, col:col};
+        return {tx:tx, ty:ty, row:pos.row, col:pos.col};
     }
 
-    addTile(row, col, colorIndex){
-        const pos = this.position(row, col);
+    addTile(position, colorIndex){
+        const coordinate = this.position(position);
 
         if(colorIndex === undefined){
             colorIndex = Math.floor(Math.random() * spritesTintSet.length);
         }
 
-        let tile = new Tile(colorIndex, pos.tx, pos.ty, row, col);
+        let tile = new Tile(
+            colorIndex, coordinate.tx, coordinate.ty, position.row, position.col);
 
         this.app.stage.addChild(tile.tile);
 
@@ -75,8 +76,8 @@ export default class GraphicsApp {
         this.app.stage.addChild(this.field);
     }
 
-    moveTile(tile, row, col){
-        const coordinate = this.position(row, col);
+    moveTile(tile, position){
+        const coordinate = this.position(position);
 
         tile.move(coordinate, this.ticker)
     }
@@ -129,12 +130,12 @@ class Tile{
         }
 
         if(diffX != 0){
-            let stepX = Math.ceil((this.tx - this.tile.x) / 20);
+            let stepX = Math.ceil((this.tx - this.tile.x) / 10);
             this.tile.x = this.tile.x + stepX;
         }
 
         if(diffY != 0){
-            let stepY = Math.ceil((this.ty - this.tile.y) / 20);
+            let stepY = Math.ceil((this.ty - this.tile.y) / 10);
             this.tile.y = this.tile.y + stepY;
         }
     }

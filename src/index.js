@@ -7,13 +7,15 @@ const conf = {
     blastTailCount: 2,
 
     graphics: {
-        canvasWidth: 430,
-        canvasHeight: 500,
+        canvasWidth: 500, //430,
+        canvasHeight: 550, //500,
         backgroundColor: 0xffffff,
         paddingWidthPercent: 3,
         tilePxGap: 1,
 
-        spritesTintSet: [0x43c3fc, 0xf17ac5, 0xff617e, 0xf1d074, 0x89e36c],
+        spritesTintSet: [
+            0x43c3fc, 0xf17ac5, 0xff617e, 0xf1d074, 0x89e36c, 0x996666,
+        ],
     },
 };
 
@@ -31,11 +33,14 @@ function onClick() {
 
     const fl = board.floor(cells);
 
-    for(let f = 0; f < fl.length; f++){
+    for (let f = 0; f < fl.length; f++) {
         const colCells = board.fallCol(fl[f]);
 
-        for (let c = 0; c < colCells.length; c++){
-            g.moveTile(colCells[c].tile, colCells[c].to.row, colCells[c].to.col)
+        for (let c = 0; c < colCells.length; c++) {
+            g.moveTile(
+                colCells[c].tile,
+                colCells[c].to
+            );
         }
     }
 }
@@ -46,7 +51,7 @@ g.downloadField();
 
 for (let c = 0; c < conf.tilesRowCount; c++) {
     for (let r = 0; r < conf.tilesRowCount; r++) {
-        let t = g.addTile(r, c);
+        let t = g.addTile({row:r, col:c});
 
         board.addCell(t);
     }
