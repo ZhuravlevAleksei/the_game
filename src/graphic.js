@@ -41,17 +41,28 @@ export default class GraphicsApp {
         this.ticker = PIXI.Ticker.shared;
 
         document.body.appendChild(this.app.view);
+
+        this._downloadField();
     }
 
-    position(pos){
+    _position(pos){
         const tx = this.paddingPx + (pos.col * (tileWidth + this.tilePxGap));
         const ty = this.paddingPx + (pos.row * (tileHeight + this.tilePxGap));
 
         return {tx:tx, ty:ty, row:pos.row, col:pos.col};
     }
 
+    _downloadField(){
+        this.field = PIXI.Sprite.from(fieldFile);
+
+        this.field.width = this.width;
+        this.field.height = this.height;
+
+        this.app.stage.addChild(this.field);
+    }
+
     addTile(position, colorIndex){
-        const coordinate = this.position(position);
+        const coordinate = this._position(position);
 
         if(colorIndex === undefined){
             colorIndex = Math.floor(Math.random() * spritesTintSet.length);
@@ -67,17 +78,8 @@ export default class GraphicsApp {
         return tile;
     }
 
-    downloadField(){
-        this.field = PIXI.Sprite.from(fieldFile);
-
-        this.field.width = this.width;
-        this.field.height = this.height;
-
-        this.app.stage.addChild(this.field);
-    }
-
     moveTile(tile, position){
-        const coordinate = this.position(position);
+        const coordinate = this._position(position);
 
         tile.move(coordinate, this.ticker)
     }
@@ -118,15 +120,15 @@ class Tile{
         this.col = coordinate.col;
         this.ticker = ticker;
 
-        this.ticker.add(this.moveHandler, this);
+        this.ticker.add(this._moveHandler, this);
     }
 
-    moveHandler(){
+    _moveHandler(){
         let diffX = this.tile.x - this.tx;
         let diffY = this.tile.y - this.ty;
 
         if((diffX == 0) && (diffY == 0)){
-            this.ticker.remove(this.moveHandler, this);
+            this.ticker.remove(this._moveHandler, this);
         }
 
         if(diffX != 0){
@@ -142,15 +144,15 @@ class Tile{
 
     show(ticker){
         this.ticker = ticker;
-        this.ticker.add(this.showHandler, this);
+        this.ticker.add(this._showHandler, this);
     }
 
-    showHandler(){
+    _showHandler(){
         let diffWidth = tileWidth - this.tile.width;
         let diffHeight = tileHeight - this.tile.height;
 
         if((diffWidth == 0) && (diffHeight == 0)){
-            this.ticker.remove(this.showHandler, this);
+            this.ticker.remove(this._showHandler, this);
         }
 
         if(diffWidth != 0){

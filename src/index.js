@@ -33,10 +33,9 @@ function onClick() {
         return;
     }
 
-
-
     for (let i = 0; i < cells.length; i++) {
         board.cleanCell(cells[i]);
+        cells[i].delete();
     }
 
     const fl = board.floor(cells);
@@ -70,7 +69,7 @@ function onClick() {
 const proc = new GameConditions(conf.conditions);
 const board = new GameBoard(conf.graphics);
 const g = new GraphicsApp(conf.graphics, onClick);
-g.downloadField();
+
 // --------------------------------------------------------
 for (let c = 0; c < conf.graphics.tilesRowCount; c++) {
     for (let r = 0; r < conf.graphics.tilesRowCount; r++) {
@@ -79,34 +78,6 @@ for (let c = 0; c < conf.graphics.tilesRowCount; c++) {
         board.addCell(t);
     }
 }
-// let t;
-// t = g.addTile({row:0, col:0}, 3);
-// board.addCell(t);
-// t = g.addTile({row:0, col:1}, 3);
-// board.addCell(t);
-// t = g.addTile({row:0, col:2}, 3);
-
-// board.addCell(t);
-// t = g.addTile({row:1, col:0}, 1);
-// board.addCell(t);
-// t = g.addTile({row:1, col:1}, 1);
-// board.addCell(t);
-// t = g.addTile({row:1, col:2}, 0);
-
-// board.addCell(t);
-// t = g.addTile({row:2, col:0}, 1);
-// board.addCell(t);
-// t = g.addTile({row:2, col:1}, 0);
-// board.addCell(t);
-// t = g.addTile({row:2, col:2}, 0);
-
-// board.addCell(t);
-// t = g.addTile({row:3, col:0}, 1);
-// board.addCell(t);
-// t = g.addTile({row:3, col:1}, 1);
-// board.addCell(t);
-// t = g.addTile({row:3, col:2}, 0);
-// board.addCell(t);
 
 const mainProc = new StateMachine({
     init: "init",

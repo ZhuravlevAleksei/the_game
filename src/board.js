@@ -1,28 +1,29 @@
 import getProperty from "./utils";
 
-function boardInit(count, value) {
-    let board = [];
-
-    for (let c = 0; c < count; c++) {
-        board.push([]);
-    }
-
-    for (let r = 0; r < count; r++) {
-        for (let c = 0; c < count; c++) {
-            board[r].push(value);
-        }
-    }
-
-    return board;
-}
 
 export default class GameBoard {
     constructor(config) {
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
-        this.board = boardInit(this.tilesRowCount, undefined);
+        this.board = this._boardInit(this.tilesRowCount, undefined);
 
         return this;
+    }
+
+    _boardInit(count, value) {
+        let board = [];
+    
+        for (let c = 0; c < count; c++) {
+            board.push([]);
+        }
+    
+        for (let r = 0; r < count; r++) {
+            for (let c = 0; c < count; c++) {
+                board[r].push(value);
+            }
+        }
+    
+        return board;
     }
 
     addCell(tile) {
@@ -33,16 +34,15 @@ export default class GameBoard {
         const row = tile.row;
         const col = tile.col;
 
-        tile.delete();
         this.board[row][col] = undefined;
     }
 
-    moveCell(coordFrom, coordTo) {
+    _moveCell(coordFrom, coordTo) {
         this.board[coordTo.row][coordTo.col] = this.board[coordFrom.row][coordFrom.col];
         this.board[coordFrom.row][coordFrom.col] = undefined;
     }
 
-    right(row, col) {
+    _right(row, col) {
         let nCol = col + 1;
 
         if (nCol >= this.tilesRowCount) {
@@ -56,7 +56,7 @@ export default class GameBoard {
         return this.board[row][nCol];
     }
 
-    under(row, col) {
+    _under(row, col) {
         let nRow = row + 1;
 
         if (nRow >= this.tilesRowCount) {
@@ -70,7 +70,7 @@ export default class GameBoard {
         return this.board[nRow][col];
     }
 
-    left(row, col) {
+    _left(row, col) {
         let nCol = col - 1;
 
         if (nCol < 0) {
@@ -84,7 +84,7 @@ export default class GameBoard {
         return this.board[row][nCol];
     }
 
-    above(row, col) {
+    _above(row, col) {
         let nRow = row - 1;
 
         if (nRow < 0) {
@@ -98,18 +98,18 @@ export default class GameBoard {
         return this.board[nRow][col];
     }
 
-    directions = [
-        this.right.bind(this),
-        this.under.bind(this),
-        this.left.bind(this),
-        this.above.bind(this),
+    _directions = [
+        this._right.bind(this),
+        this._under.bind(this),
+        this._left.bind(this),
+        this._above.bind(this),
     ];
 
-    neighbours(row, col, colorIndex) {
+    _neighbours(row, col, colorIndex) {
         const cells = [];
 
-        for (let d = 0; d < this.directions.length; d++) {
-            let cell = this.directions[d](row, col);
+        for (let d = 0; d < this._directions.length; d++) {
+            let cell = this._directions[d](row, col);
 
             if (cell === undefined) {
                 continue;
@@ -123,7 +123,7 @@ export default class GameBoard {
         return cells;
     }
 
-    predicateForExclude(n) {
+    _predicateForExclude(n) {
         for (let p = 0; p < this.excludeSet.length; p++) {
             if (
                 n.row == this.excludeSet[p].row &&
@@ -136,7 +136,7 @@ export default class GameBoard {
     }
 
     search(currCell, prevCells) {
-        const nbs = this.neighbours(
+        const nbs = this._neighbours(
             currCell.row,
             currCell.col,
             currCell.colorIndex
@@ -151,7 +151,7 @@ export default class GameBoard {
             prevCells.push(currCell);
 
             this.excludeSet = prevCells;
-            toSearch = nbs.filter(this.predicateForExclude.bind(this));
+            toSearch = nbs.filter(this._predicateForExclude.bind(this));
         }
 
         let nCells = toSearch;
@@ -161,7 +161,7 @@ export default class GameBoard {
 
             // closure handling
             this.excludeSet = nCells;
-            let fRes = res.filter(this.predicateForExclude.bind(this));
+            let fRes = res.filter(this._predicateForExclude.bind(this));
 
             nCells = nCells.concat(fRes);
         }
@@ -236,7 +236,7 @@ export default class GameBoard {
         let row = coordinate.row;
 
         for (; row > 0; row--) {
-            let cell = this.above(row, coordinate.col);
+            let cell = this._above(row, coordinate.col);
 
             if (cell !== undefined) {
                 displacement = coordinate.row - row + 1 - dispCellCount++;
@@ -246,7 +246,7 @@ export default class GameBoard {
 
                 cells.push({ tile: cell, to: to });
 
-                this.moveCell(from, to);
+                this._moveCell(from, to);
             }
         }
 
