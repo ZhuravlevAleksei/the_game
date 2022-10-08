@@ -29,7 +29,7 @@ function onClick() {
     let cells = [this];
     cells = cells.concat(board.search(this));
 
-    if (cells.length < conf.blastTailCount) {
+    if (cells.length < conf.conditions.blastTailCount) {
         return;
     }
 
@@ -51,7 +51,7 @@ function onClick() {
         board.addCell(t);
     }
 
-    let limitCounter = conf.tilesRowCount + 1;
+    let limitCounter = conf.graphics.tilesRowCount + 1;
 
     while(limitCounter--) {
         let emptyAll = board.searchForEmptiesInBoard(1);
