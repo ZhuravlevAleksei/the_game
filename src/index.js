@@ -1,6 +1,7 @@
 const StateMachine = require("javascript-state-machine");
 import GraphicsApp from "./graphic";
-import GameBoard from "./process";
+import GameBoard from "./board";
+import {GameConditions} from "./process"
 import {conf} from "./config.js"
 
 
@@ -31,6 +32,8 @@ function onClick() {
     if (cells.length < conf.blastTailCount) {
         return;
     }
+
+
 
     for (let i = 0; i < cells.length; i++) {
         board.cleanCell(cells[i]);
@@ -64,12 +67,13 @@ function onClick() {
     };
 }
 
-const board = new GameBoard(conf);
-const g = new GraphicsApp(conf, onClick);
+const proc = new GameConditions(conf.conditions);
+const board = new GameBoard(conf.graphics);
+const g = new GraphicsApp(conf.graphics, onClick);
 g.downloadField();
-
-for (let c = 0; c < conf.tilesRowCount; c++) {
-    for (let r = 0; r < conf.tilesRowCount; r++) {
+// --------------------------------------------------------
+for (let c = 0; c < conf.graphics.tilesRowCount; c++) {
+    for (let r = 0; r < conf.graphics.tilesRowCount; r++) {
         let t = g.addTile({ row: r, col: c });
 
         board.addCell(t);

@@ -1,10 +1,14 @@
  const conf = {
-    tilesRowCount: 9,
-    blastTailCount: 2,
-
+    conditions: {
+        blastTailCount: 2,
+        scoreToWin: 100,
+        clickLimit: 30,
+        shakeLimit: 3,
+    },
     graphics: {
-        canvasWidth: 500, //430,
-        canvasHeight: 550, //500,
+        tilesRowCount: 9,
+        canvasWidth: 600, //430,
+        canvasHeight: 700, //500,
         backgroundColor: 0xffffff,
         paddingWidthPercent: 3,
         tilePxGap: 1,

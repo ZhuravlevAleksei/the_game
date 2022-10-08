@@ -11,16 +11,14 @@ let tileClickHandler = undefined;
 
 export default class GraphicsApp {
     constructor(config, tileHandler) {
-        const graphics = getProperty("graphics", config);
-
-        this.width = getProperty("canvasWidth", graphics);
-        this.height = getProperty("canvasHeight", graphics);
-        this.backgroundColor = getProperty("backgroundColor", graphics);
-        this.tilePxGap = getProperty("tilePxGap", graphics);
-        spritesTintSet = getProperty("spritesTintSet", graphics);
+        this.width = getProperty("canvasWidth", config);
+        this.height = getProperty("canvasHeight", config);
+        this.backgroundColor = getProperty("backgroundColor", config);
+        this.tilePxGap = getProperty("tilePxGap", config);
+        spritesTintSet = getProperty("spritesTintSet", config);
 
         this.paddingPx = Math.floor(
-            (this.width / 100) * getProperty("paddingWidthPercent", graphics));
+            (this.width / 100) * getProperty("paddingWidthPercent", config));
 
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
