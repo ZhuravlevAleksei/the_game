@@ -3,6 +3,7 @@ import { GraphicsApp } from "./graphic";
 import { GameBoard } from "./board";
 import { GameConditions } from "./process";
 import { conf } from "./config.js";
+import { DashboardApp } from "./dashboard";
 
 
 const proc = new GameConditions(conf.conditions);
@@ -43,6 +44,8 @@ const boardHandlerMixin = {
 
 Object.assign(GraphicsApp.prototype, boardHandlerMixin);
 const g = new GraphicsApp(conf.graphics);
+
+const d = new DashboardApp(conf.dashboard);
 
 // --------------------------------------------------------
 g.fillAll();
