@@ -4,7 +4,7 @@ import getProperty from "./utils";
 class GameBoard {
     constructor(config, blastTailCount) {
         this.tilesRowCount = getProperty("tilesRowCount", config);
-        
+
         if(blastTailCount === undefined){
             throw new Error(`Property "blastTailCount" is not defined`);
         }
@@ -18,17 +18,17 @@ class GameBoard {
 
     _boardInit(count, value) {
         let board = [];
-    
+
         for (let c = 0; c < count; c++) {
             board.push([]);
         }
-    
+
         for (let r = 0; r < count; r++) {
             for (let c = 0; c < count; c++) {
                 board[r].push(value);
             }
         }
-    
+
         return board;
     }
 
@@ -267,11 +267,11 @@ class GameBoard {
         const fl = this._floorEmpty();
 
         const colls = [];
-    
+
         for (let f = 0; f < fl.length; f++) {
             colls.push(this._fallCol(fl[f]));
         }
-    
+
         return colls;
     }
 
@@ -294,6 +294,52 @@ class GameBoard {
 
         return true;
     }
+
+    _nextCell() {
+        if (
+            this.cursor.row >= this.tilesRowCount &&
+            this.cursor.col >= this.tilesRowCount
+        ) {
+            return undefined;
+        }
+
+        if (this.cursor.col < this.tilesRowCount - 1) {
+            this.cursor.col++;
+        } else {
+            if (this.cursor.row < this.tilesRowCount - 1) {
+                this.cursor.col = 0;
+                this.cursor.row++;
+            } else {
+                return undefined;
+            }
+        }
+
+        return this.cursor;
+    }
+
+    checkBlastUnablity() {
+        this.cursor = { row: 0, col: 0 };
+        let cell = this.cursor;
+
+        while (cell) {
+            let tile = this.board[cell.row][cell.col];
+
+            if (tile === undefined) {
+                continue;
+            }
+
+            let cells = this._search(tile);
+
+            if ((cells.length + 1) >= this.blastTailCount) {
+                console.log(cell);
+                return false;
+            }
+
+            cell = this._nextCell();
+        }
+
+        return true;
+    }
 }
 
-export {GameBoard};
+export { GameBoard };
