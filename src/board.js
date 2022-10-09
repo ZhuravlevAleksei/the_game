@@ -1,9 +1,15 @@
 import getProperty from "./utils";
 
 
-export default class GameBoard {
-    constructor(config) {
+class GameBoard {
+    constructor(config, blastTailCount) {
         this.tilesRowCount = getProperty("tilesRowCount", config);
+        
+        if(blastTailCount === undefined){
+            throw new Error(`Property "blastTailCount" is not defined`);
+        }
+
+        this.blastTailCount = blastTailCount;
 
         this.board = this._boardInit(this.tilesRowCount, undefined);
 
@@ -26,11 +32,14 @@ export default class GameBoard {
         return board;
     }
 
-    addCell(tile) {
-        this.board[tile.row][tile.col] = tile;
+    addCells(tileArray){
+        for(let t = 0; t < tileArray.length; t++){
+            let tile = tileArray[t];
+            this.board[tile.row][tile.col] = tile;
+        }
     }
 
-    cleanCell(tile) {
+    _cleanCell(tile) {
         const row = tile.row;
         const col = tile.col;
 
@@ -135,7 +144,7 @@ export default class GameBoard {
         return true;
     }
 
-    search(currCell, prevCells) {
+    _search(currCell, prevCells) {
         const nbs = this._neighbours(
             currCell.row,
             currCell.col,
@@ -157,7 +166,7 @@ export default class GameBoard {
         let nCells = toSearch;
 
         for (let n = 0; n < toSearch.length; n++) {
-            let res = this.search(toSearch[n], prevCells);
+            let res = this._search(toSearch[n], prevCells);
 
             // closure handling
             this.excludeSet = nCells;
@@ -169,35 +178,13 @@ export default class GameBoard {
         return nCells;
     }
 
-    floor(cells) {
-        cells.sort((a, b) => {
-            return a.col > b.col;
-        });
+    _floorEmpty() {
+        const cellsPosition = this._searchForEmptiesInBoard(1);
 
-        const colSliced = [];
-
-        for (let c = cells[0].col; c <= cells[cells.length - 1].col; c++) {
-            let f = cells.filter((n) => {
-                return n.col == c;
-            });
-
-            f.sort((a, b) => {
-                return a.row < b.row;
-            });
-
-            colSliced.push(f);
+        if(cellsPosition.length == 0){
+            return cellsPosition;
         }
 
-        const fl = [];
-
-        for (let c = 0; c < colSliced.length; c++) {
-            fl.push({ row: colSliced[c][0].row, col: colSliced[c][0].col });
-        }
-
-        return fl;
-    }
-
-    floorEmpty(cellsPosition) {
         cellsPosition.sort((a, b) => {
             return a.col > b.col;
         });
@@ -229,7 +216,7 @@ export default class GameBoard {
         return fl;
     }
 
-    fallCol(coordinate) {
+    _fallCol(coordinate) {
         const cells = [];
         let displacement;
         let dispCellCount = 0;
@@ -265,7 +252,7 @@ export default class GameBoard {
         return topCells;
     }
 
-    searchForEmptiesInBoard(topRow){
+    _searchForEmptiesInBoard(topRow){
         let emptyAll = [];
 
         for(let r = topRow; r < this.tilesRowCount; r++){
@@ -275,4 +262,38 @@ export default class GameBoard {
 
         return emptyAll;
     }
+
+    collsToFall() {
+        const fl = this._floorEmpty();
+
+        const colls = [];
+    
+        for (let f = 0; f < fl.length; f++) {
+            colls.push(this._fallCol(fl[f]));
+        }
+    
+        return colls;
+    }
+
+    blast(tile){
+        // search --------------------------
+        let cells = [tile];
+        cells = cells.concat(this._search(tile));
+
+        if (cells.length < this.blastTailCount) {
+            return false;
+        }
+
+        // blast ---------------------------
+        for (let i = 0; i < cells.length; i++) {
+            this._cleanCell(cells[i]);
+            cells[i].delete();
+        }
+
+        // this.blastCounter(cells.length); MIXIN
+
+        return true;
+    }
 }
+
+export {GameBoard};

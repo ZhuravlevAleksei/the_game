@@ -9,8 +9,8 @@ let tileHeight = undefined;
 let tileClickHandler = undefined;
 
 
-export default class GraphicsApp {
-    constructor(config, tileHandler) {
+class GraphicsApp {
+    constructor(config) {
         this.width = getProperty("canvasWidth", config);
         this.height = getProperty("canvasHeight", config);
         this.backgroundColor = getProperty("backgroundColor", config);
@@ -22,7 +22,7 @@ export default class GraphicsApp {
 
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
-        tileClickHandler = tileHandler;
+        tileClickHandler = this._onClick.bind(this);
 
         const gapSpace = (this.tilesRowCount - 1) * this.tilePxGap;
 
@@ -45,6 +45,47 @@ export default class GraphicsApp {
         this._downloadField();
     }
 
+    _onClick(tile){
+        if(this.blast()(tile) == false){
+            return;
+        }
+
+        let emptyTopCells = this.searchForEmptiesInRows()(0);
+
+        let tiles = this.addTiles(emptyTopCells);
+        this.addCells()(tiles);
+
+        // Fill all cells -------------------
+        let limitCounter = this.tilesRowCount + 1;
+    
+        while (limitCounter--) {
+            // The fall on floor ------------------
+            let colls = this.collsToFall()();
+
+            if (colls.length == 0) {
+                break;
+            }
+
+            for (let c = 0; c < colls.length; c++) {
+                this._moveTiles(colls[c]);
+            }
+    
+            // Fill top row ----------------------
+            emptyTopCells = this.searchForEmptiesInRows()(0);
+
+            tiles = this.addTiles(emptyTopCells);
+            this.addCells()(tiles);
+        }
+    }
+
+    fillAll(){
+        for(let r = 0; r < this.tilesRowCount; r++){
+            let emptyRowCells = this.searchForEmptiesInRows()(r);
+            let tiles = this.addTiles(emptyRowCells);
+            this.addCells()(tiles);
+        }
+    }
+
     _position(pos){
         const tx = this.paddingPx + (pos.col * (tileWidth + this.tilePxGap));
         const ty = this.paddingPx + (pos.row * (tileHeight + this.tilePxGap));
@@ -61,7 +102,7 @@ export default class GraphicsApp {
         this.app.stage.addChild(this.field);
     }
 
-    addTile(position, colorIndex){
+    _addTile(position, colorIndex){
         const coordinate = this._position(position);
 
         if(colorIndex === undefined){
@@ -78,10 +119,27 @@ export default class GraphicsApp {
         return tile;
     }
 
-    moveTile(tile, position){
+    addTiles(emptyCells){
+        const tiles = [];
+
+        for (let c = 0; c < emptyCells.length; c++) {
+            let t = this._addTile(emptyCells[c]);
+            tiles.push(t);
+        }
+
+        return tiles;
+    }
+
+    _moveTile(tile, position){
         const coordinate = this._position(position);
 
         tile.move(coordinate, this.ticker)
+    }
+
+    _moveTiles(tilesArr){
+        for (let c = 0; c < tilesArr.length; c++) {
+            this._moveTile(tilesArr[c].tile, tilesArr[c].to);
+        }
     }
 }
 
@@ -101,12 +159,16 @@ class Tile{
 
         this.tile.interactive = true;
         this.tile.buttonMode = true;
-        this.tile.on('pointerdown', tileClickHandler.bind(this));
+        this.tile.on('pointerdown', this._tileOnClick.bind(this));
 
         this.col = col;
         this.row = row;
 
         return this;
+    }
+
+    _tileOnClick(){
+        tileClickHandler(this)
     }
 
     delete(){
@@ -166,3 +228,5 @@ class Tile{
         }
     }
 }
+
+export {GraphicsApp}
