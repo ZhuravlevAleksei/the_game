@@ -76,6 +76,8 @@ class GraphicsApp {
             tiles = this.addTiles(emptyTopCells);
             this.addCells()(tiles);
         }
+
+        this.checkBlastUnablity()();
     }
 
     fillAll(){

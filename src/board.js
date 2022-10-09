@@ -297,7 +297,7 @@ class GameBoard {
             cells[i].delete();
         }
 
-        // this.blastCounter(cells.length); MIXIN
+        this.clickCounter()(cells.length);
 
         return true;
     }
@@ -359,14 +359,14 @@ class GameBoard {
             let cells = this._search(tile);
 
             if ((cells.length + 1) >= this.blastTileCount) {
-                console.log(tile.row, tile.col);
-                return false;
+                this.disableShaking()();
+                return;
             }
 
             tile = this.nextTile();
         }
 
-        return true;
+        this.enableShaking()();
     }
 
     shakeBoard(){

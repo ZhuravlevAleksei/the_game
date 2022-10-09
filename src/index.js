@@ -6,6 +6,19 @@ import { conf } from "./config.js";
 
 
 const proc = new GameConditions(conf.conditions);
+
+const procHandlerMixin = {
+    __proto__: proc,
+
+    enableShaking(){return super.enableShaking.bind(proc)},
+
+    disableShaking(){return super.disableShaking.bind(proc)},
+
+    clickCounter(){return super.clickCounter.bind(proc)},
+}
+
+Object.assign(GameBoard.prototype, procHandlerMixin);
+
 const board = new GameBoard(conf.graphics, conf.conditions.blastTileCount);
 
 const boardHandlerMixin = {
@@ -23,7 +36,9 @@ const boardHandlerMixin = {
 
     resetTileCursor(){return super.resetTileCursor.bind(board)},
 
-    shakeBoard(){return super.shakeBoard.bind(board)}
+    shakeBoard(){return super.shakeBoard.bind(board)},
+
+    checkBlastUnablity(){return super.checkBlastUnablity.bind(board)}
 }
 
 Object.assign(GraphicsApp.prototype, boardHandlerMixin);
