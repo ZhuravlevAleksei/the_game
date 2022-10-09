@@ -6,7 +6,7 @@ import { conf } from "./config.js";
 
 
 const proc = new GameConditions(conf.conditions);
-const board = new GameBoard(conf.graphics, conf.conditions.blastTailCount);
+const board = new GameBoard(conf.graphics, conf.conditions.blastTileCount);
 
 const boardHandlerMixin = {
     __proto__: board,
@@ -17,7 +17,13 @@ const boardHandlerMixin = {
 
     addCells(){return super.addCells.bind(board)},
 
-    collsToFall(){return super.collsToFall.bind(board)}
+    collsToFall(){return super.collsToFall.bind(board)},
+
+    nextTile(){return super.nextTile.bind(board)},
+
+    resetTileCursor(){return super.resetTileCursor.bind(board)},
+
+    shakeBoard(){return super.shakeBoard.bind(board)}
 }
 
 Object.assign(GraphicsApp.prototype, boardHandlerMixin);
@@ -25,6 +31,7 @@ const g = new GraphicsApp(conf.graphics);
 
 // --------------------------------------------------------
 g.fillAll();
+g.shake();
 
 const mainProc = new StateMachine({
     init: "init",

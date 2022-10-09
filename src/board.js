@@ -2,14 +2,14 @@ import getProperty from "./utils";
 
 
 class GameBoard {
-    constructor(config, blastTailCount) {
+    constructor(config, blastTileCount) {
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
-        if(blastTailCount === undefined){
-            throw new Error(`Property "blastTailCount" is not defined`);
+        if(blastTileCount === undefined){
+            throw new Error(`Property "blastTileCount" is not defined`);
         }
 
-        this.blastTailCount = blastTailCount;
+        this.blastTileCount = blastTileCount;
 
         this.board = this._boardInit(this.tilesRowCount, undefined);
 
@@ -49,6 +49,13 @@ class GameBoard {
     _moveCell(coordFrom, coordTo) {
         this.board[coordTo.row][coordTo.col] = this.board[coordFrom.row][coordFrom.col];
         this.board[coordFrom.row][coordFrom.col] = undefined;
+    }
+
+    changeCells(coordFrom, coordTo){
+        const tmp = this.board[coordTo.row][coordTo.col];
+        this.board[coordTo.row][coordTo.col] = this.board[coordFrom.row][coordFrom.col];
+        
+        this.board[coordFrom.row][coordFrom.col] = tmp;
     }
 
     _right(row, col) {
@@ -280,7 +287,7 @@ class GameBoard {
         let cells = [tile];
         cells = cells.concat(this._search(tile));
 
-        if (cells.length < this.blastTailCount) {
+        if (cells.length < this.blastTileCount) {
             return false;
         }
 
@@ -295,7 +302,7 @@ class GameBoard {
         return true;
     }
 
-    _nextCell() {
+    nextCell() {
         if (
             this.cursor.row >= this.tilesRowCount &&
             this.cursor.col >= this.tilesRowCount
@@ -317,28 +324,76 @@ class GameBoard {
         return this.cursor;
     }
 
-    checkBlastUnablity() {
+    nextTile(){
+        const cell = this.nextCell();
+
+        if(cell === undefined){
+            return null;
+        }
+
+        return this.board[cell.row][cell.col];
+    }
+
+    resetCursor(){
         this.cursor = { row: 0, col: 0 };
-        let cell = this.cursor;
+        return this.cursor;
+    }
 
-        while (cell) {
-            let tile = this.board[cell.row][cell.col];
+    resetTileCursor(){
+        const cell = this.resetCursor();
+        return this.board[cell.row][cell.col];
+    }
 
+    getCell(position){
+        return this.board[position.row][position.col];
+    }
+
+    checkBlastUnablity() {
+        let tile = this.resetTileCursor();
+
+        while (tile !== null) {
             if (tile === undefined) {
-                continue;
+                tile = this.nextTile();
             }
 
             let cells = this._search(tile);
 
-            if ((cells.length + 1) >= this.blastTailCount) {
-                console.log(cell);
+            if ((cells.length + 1) >= this.blastTileCount) {
+                console.log(tile.row, tile.col);
                 return false;
             }
 
-            cell = this._nextCell();
+            tile = this.nextTile();
         }
 
         return true;
+    }
+
+    shakeBoard(){
+        let cell = this.resetCursor();
+
+        while(cell){
+            let positionTo = {
+                row: Math.floor(Math.random() * this.tilesRowCount),
+                col: Math.floor(Math.random() * this.tilesRowCount)
+            };
+
+            let tileTo = this.getCell(positionTo);
+            let tile = this.getCell(cell);
+
+            tileTo.row = tile.row;
+            tileTo.col = tile.col;
+
+            tile.row = positionTo.row;
+            tile.col = positionTo.col;
+
+            tile.toMove = true;
+            tileTo.toMove = true;
+
+            this.changeCells(cell, positionTo);
+
+            cell = this.nextCell();
+        }
     }
 }
 

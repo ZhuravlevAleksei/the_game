@@ -141,6 +141,25 @@ class GraphicsApp {
             this._moveTile(tilesArr[c].tile, tilesArr[c].to);
         }
     }
+
+    shake(){
+        this.shakeBoard()();
+        let tile = this.resetTileCursor()();
+
+        while (tile !== null) {
+            if (tile === undefined) {
+                tile = this.nextTile()();
+                continue;
+            }
+
+            if(tile.toMove){
+                let positionTo = {row: tile.row, col: tile.col};
+                this._moveTile(tile, positionTo);
+            }
+
+            tile = this.nextTile()();
+        }
+    }
 }
 
 class Tile{
@@ -164,6 +183,8 @@ class Tile{
         this.col = col;
         this.row = row;
 
+        this.toMove = false;
+
         return this;
     }
 
@@ -181,6 +202,7 @@ class Tile{
         this.row = coordinate.row;
         this.col = coordinate.col;
         this.ticker = ticker;
+        this.toMove = false;
 
         this.ticker.add(this._moveHandler, this);
     }
@@ -194,12 +216,28 @@ class Tile{
         }
 
         if(diffX != 0){
-            let stepX = Math.ceil((this.tx - this.tile.x) / 10);
+            let xDiff = this.tx - this.tile.x
+            let stepX = 1;
+
+            if(Math.abs(xDiff) < 5){
+                stepX = Math.ceil((this.tx - this.tile.x) / 1);
+            }else{
+                stepX = Math.ceil((this.tx - this.tile.x) / 5);
+            }
+            
             this.tile.x = this.tile.x + stepX;
         }
 
         if(diffY != 0){
-            let stepY = Math.ceil((this.ty - this.tile.y) / 10);
+            let yDiff = this.ty - this.tile.y
+            let stepY = 1;
+
+            if(Math.abs(yDiff) < 5){
+                stepY = Math.ceil((this.ty - this.tile.y) / 1);
+            }else{
+                stepY = Math.ceil((this.ty - this.tile.y) / 5);
+            }
+
             this.tile.y = this.tile.y + stepY;
         }
     }
