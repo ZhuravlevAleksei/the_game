@@ -9,7 +9,8 @@ const mainMethods = {
     shake:undefined,
     showScore:undefined,
     showClick:undefined,
-    showProgress:undefined
+    showProgress:undefined,
+    shakeButtonEffect:undefined
 }
 
 const proc = new GameConditions(conf.conditions, mainMethods);
@@ -65,6 +66,7 @@ mainMethods.shake = g.shake.bind(g);
 mainMethods.showScore = d.showScore.bind(d);
 mainMethods.showClick = d.showClick.bind(d);
 mainMethods.showProgress = d.showProgress.bind(d);
+mainMethods.shakeButtonEffect = d.shakeButtonEffect.bind(d);
 // --------------------------------------------------------
 g.fillAll();
 

@@ -78,6 +78,7 @@ class DashboardApp{
         this.app.stage.addChild(this.scoreIndicator);
 
         this.shakeButtonOpen = PIXI.Sprite.from(shakeButtonCloseFile);
+        this.shakeButtonOpen.anchor.set(0.5,0.5);
         this.shakeButtonOpen.width = this.shakeButtonWidth;
         this.shakeButtonOpen.height = this.shakeButtonHeight;
         this.shakeButtonOpen.x = this.shakeButtonX;
@@ -178,6 +179,19 @@ class DashboardApp{
         const x = (500 / 100) * progressPercentage;
         this.progressLineRight.x = this.progressLineStart + this.progressLineW + x;
         this.progressLineCenter.width = this.progressLineW + x;
+    }
+
+    shakeButtonEffect(){
+        this.ticker.add(this._shakeButtonEffectHandler, this);
+    }
+
+    _shakeButtonEffectHandler(){
+        this.shakeButtonOpen.angle += 5;
+
+        if(this.shakeButtonOpen.angle >= 90){
+            this.shakeButtonOpen.angle = 0;
+            this.ticker.remove(this._shakeButtonEffectHandler, this);
+        }
     }
 }
 

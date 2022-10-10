@@ -1,7 +1,7 @@
  const conf = {
     conditions: {
-        blastTileCount: 3,
-        scoreToWin: 50,
+        blastTileCount: 2,
+        scoreToWin: 100,
         clickLimit: 30,
         shakeLimit: 3,
     },
@@ -26,7 +26,9 @@
             Width: 578,
             Height: 109,
             X: 10,
-            Y: 30
+            Y: 30,
+            progressLineStart:48,
+            progressLineW: 1
         },
         scoreIndicator: {
             Width: 360,

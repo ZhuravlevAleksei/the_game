@@ -43,6 +43,7 @@ class GameConditions{
     // Shaking --------------------------------------------
     enableShaking(){
         this.shakingEnable = true;
+        this.main.shakeButtonEffect();
     }
 
     disableShaking(){
