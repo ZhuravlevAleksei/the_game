@@ -162,6 +162,21 @@ class GraphicsApp {
             tile = this.nextTile()();
         }
     }
+
+    lockTiles(){
+        let tile = this.resetTileCursor()();
+
+        while (tile !== null) {
+            if (tile === undefined) {
+                tile = this.nextTile()();
+                continue;
+            }
+
+            tile.lock();
+
+            tile = this.nextTile()();
+        }
+    }
 }
 
 class Tile{
@@ -196,6 +211,11 @@ class Tile{
 
     delete(){
         this.tile.destroy();
+    }
+
+    lock(){
+        this.tile.interactive = false;
+        this.tile.buttonMode = false;
     }
 
     move(coordinate, ticker){

@@ -55,7 +55,7 @@ class DashboardApp{
 
         this.field.width = this.width;
         this.field.height = this.height;
-        this.field.zIndex = 0;
+        this.field.zIndex = 2;
 
         this.app.stage.addChild(this.field);
 
@@ -131,6 +131,20 @@ class DashboardApp{
         this.textClick.x = 357;
         this.textClick.y = 255;
         this.app.stage.addChild(this.textClick);
+
+        this.winningText = new PIXI.TextStyle(scoreStyle);
+        this.textWinning = new PIXI.Text('WIN', this.winningText);
+        this.textWinning.style.fontSize = 100;
+        this.textWinning.style.fill = 0xff617e;
+        this.textWinning.x = 150;
+        this.textWinning.y = 255;
+
+        this.losingText = new PIXI.TextStyle(scoreStyle);
+        this.textLosing = new PIXI.Text('LOSS', this.losingText);
+        this.textLosing.style.fontSize = 100;
+        this.textLosing.style.fill = 0xf1d074;
+        this.textLosing.x = 140;
+        this.textLosing.y = 255;
     }
 
     _shakeButtonOnClick(){
@@ -193,6 +207,37 @@ class DashboardApp{
             this.ticker.remove(this._shakeButtonEffectHandler, this);
         }
     }
+
+    _hide(){
+        this.shakeButtonOpen.destroy();
+        this.scoreIndicator.destroy();
+        this.textClick.destroy();
+        this.textScore.destroy()
+    }
+
+    winningEffect(){
+        this._hide();
+        this.app.stage.addChild(this.textWinning);
+        // this.ticker.add(this._winningEffectHandler, this);
+    }
+
+    // _winningEffectHandler(){
+    //     if(true){
+    //         this.ticker.remove(this._winningEffectHandler, this);
+    //     }
+    // }
+
+    losingEffect(){
+        this._hide();
+        this.app.stage.addChild(this.textLosing);
+        // this.ticker.add(this._losingEffectHandler, this);
+    }
+
+    // _losingEffectHandler(){
+    //     if(true){
+    //         this.ticker.remove(this._losingEffectHandler, this);
+    //     }
+    // }
 }
 
 export {DashboardApp};

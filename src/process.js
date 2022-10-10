@@ -31,12 +31,14 @@ class GameConditions{
 
         if(this.blastCount >= this.scoreToWin){
             // winning
-            console.log("winning");
+            this.main.winningEffect();
+            this.main.lockTiles();
         }
 
         if(this.clickCount >= this.clickLimit){
             // losing
-            console.log("losing");
+            this.main.losingEffect();
+            this.main.lockTiles();
         }
     }
 

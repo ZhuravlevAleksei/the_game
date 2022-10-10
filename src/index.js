@@ -10,7 +10,10 @@ const mainMethods = {
     showScore:undefined,
     showClick:undefined,
     showProgress:undefined,
-    shakeButtonEffect:undefined
+    shakeButtonEffect:undefined,
+    winningEffect:undefined,
+    losingEffect:undefined,
+    lockTiles:undefined
 }
 
 const proc = new GameConditions(conf.conditions, mainMethods);
@@ -67,6 +70,9 @@ mainMethods.showScore = d.showScore.bind(d);
 mainMethods.showClick = d.showClick.bind(d);
 mainMethods.showProgress = d.showProgress.bind(d);
 mainMethods.shakeButtonEffect = d.shakeButtonEffect.bind(d);
+mainMethods.winningEffect = d.winningEffect.bind(d);
+mainMethods.losingEffect = d.losingEffect.bind(d);
+mainMethods.lockTiles = g.lockTiles.bind(g);
 // --------------------------------------------------------
 g.fillAll();
 
