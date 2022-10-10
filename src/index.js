@@ -26,6 +26,8 @@ const procHandlerMixin = {
     disableShaking(){return super.disableShaking.bind(proc)},
 
     clickCounter(){return super.clickCounter.bind(proc)},
+
+    checkSuperTileMode(){return super.checkSuperTileMode.bind(proc)}
 }
 
 Object.assign(GameBoard.prototype, procHandlerMixin);

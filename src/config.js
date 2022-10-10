@@ -4,6 +4,7 @@
         scoreToWin: 100,
         clickLimit: 30,
         shakeLimit: 3,
+        supetTileLimit: 4
     },
     graphics: {
         tilesRowCount: 9,

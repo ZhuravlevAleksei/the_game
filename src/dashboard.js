@@ -209,10 +209,10 @@ class DashboardApp{
     }
 
     _hide(){
-        this.shakeButtonOpen.destroy();
-        this.scoreIndicator.destroy();
-        this.textClick.destroy();
-        this.textScore.destroy()
+        if(this.shakeButtonOpen){this.shakeButtonOpen.destroy();}
+        if(this.scoreIndicator){this.scoreIndicator.destroy();}
+        if(this.textClick){this.textClick.destroy();}
+        if(this.textScore){this.textScore.destroy();}
     }
 
     winningEffect(){

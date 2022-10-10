@@ -186,7 +186,7 @@ class GameBoard {
     }
 
     _floorEmpty() {
-        const cellsPosition = this._searchForEmptiesInBoard(1);
+        const cellsPosition = this._searchForEmptiesInBoard(0);
 
         if(cellsPosition.length == 0){
             return cellsPosition;
@@ -282,24 +282,59 @@ class GameBoard {
         return colls;
     }
 
+    superTileBlast(superCell){
+        let blastCount = 0;
+        const row = superCell.row;
+
+        for(let c = 0; c < this.tilesRowCount; c++){
+            let cell = this.board[row][c];
+
+            if(cell === undefined){
+                continue;
+            }
+
+            cell.delete();
+            this._cleanCell(cell);
+            blastCount += 1;
+        }
+
+        return blastCount;
+    }
+
     blast(tile){
+        let blastCount = 0;
+
         // search --------------------------
         let cells = [tile];
         cells = cells.concat(this._search(tile));
 
         if (cells.length < this.blastTileCount) {
-            return false;
+            return {counter: false, super: false};
         }
 
         // blast ---------------------------
         for (let i = 0; i < cells.length; i++) {
-            this._cleanCell(cells[i]);
+            if(cells[i] === undefined){
+                continue;
+            }
+
+            if(cells[i].superTile){
+                blastCount += this.superTileBlast(cells[i]);
+                continue;
+            }
+            
             cells[i].delete();
+            this._cleanCell(cells[i]);
+            blastCount += 1;
         }
 
-        this.clickCounter()(cells.length);
+        this.clickCounter()(blastCount);
 
-        return true;
+        let result = {counter: true, super: false};
+
+        result.super = this.checkSuperTileMode()(cells.length);
+
+        return result;
     }
 
     nextCell() {
