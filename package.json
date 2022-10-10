@@ -19,6 +19,7 @@
     "@pixi/math": "^6.5.5",
     "@pixi/runner": "^6.5.5",
     "@pixi/settings": "^6.5.5",
+    "@pixi/text": "^6.5.5",
     "@pixi/ticker": "^6.5.5",
     "@pixi/utils": "^6.5.5",
     "javascript-state-machine": "^3.1.0",

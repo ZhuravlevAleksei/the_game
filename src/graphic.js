@@ -38,8 +38,6 @@ class GraphicsApp {
             backgroundColor: this.backgroundColor
         });
 
-        // this.ticker = PIXI.Ticker.shared;
-
         document.body.appendChild(this.app.view);
 
         this._downloadField();
@@ -267,6 +265,10 @@ class Tile{
     }
 
     delete(){
+        this.blast();
+    }
+
+    _destroy(){
         if(this.ticker){
             this.ticker.remove(this._superTHandler, this);
             this.ticker.destroy();
@@ -276,6 +278,41 @@ class Tile{
             if(this.tile._texture){
                 this.tile.destroy();
             }
+        }
+    }
+
+    blast(){
+        if(this.superTile){
+            if(this.ticker){
+                this.ticker.remove(this._superTHandler, this);
+            }
+        }
+        this.tile.tint = 0xffffff;
+        this.tile.alpha = 0.4
+
+        this.ticker = PIXI.Ticker.shared;
+        this.ticker.add(this._blastHandler, this);
+    }
+
+    _blastHandler(){
+        if(this.tile.width < tileWidth * 3){
+            this.tile.width += 20;
+
+        }else{
+            this.ticker.remove(this._blastHandler, this);
+            this.ticker.destroy();
+            this._destroy();
+            return;
+        }
+        
+        if(this.tile.height < tileHeight * 3){
+            this.tile.height += 20;
+
+        }else{
+            this.ticker.remove(this._blastHandler, this);
+            this.ticker.destroy();
+            this._destroy();
+            return;
         }
     }
 
@@ -318,6 +355,7 @@ class Tile{
             if(this.superTile){
                 this.superT();
             }
+            return;
         }
 
         if(diffX != 0){
@@ -363,6 +401,7 @@ class Tile{
             if(this.superTile){
                 this.superT();
             }
+            return;
         }
 
         if(diffWidth != 0){
