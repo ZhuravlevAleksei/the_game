@@ -84,7 +84,7 @@ class DashboardApp{
     }
 
     _shakeButtonOnClick(){
-        // tileClickHandler(this);
+        this.shakeButton()();
     }
 }
 

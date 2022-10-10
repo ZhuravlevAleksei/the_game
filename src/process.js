@@ -2,13 +2,17 @@ import getProperty from './utils'
 
 
 class GameConditions{
-    constructor(config){
+    constructor(config, main){
         this.scoreToWin = getProperty("scoreToWin", config);
         this.clickLimit = getProperty("clickLimit", config);
         this.shakeLimit = getProperty("shakeLimit", config);
 
         this.blastCount = 0;
         this.clickCount = 0;
+
+        this.shakingEnable = false;
+
+        this.main = main;
     }
 
     clickCounter(number){
@@ -30,12 +34,19 @@ class GameConditions{
         }
     }
 
+    // Shaking --------------------------------------------
     enableShaking(){
-        console.log("enableShaking");
+        this.shakingEnable = true;
     }
 
     disableShaking(){
-        console.log("disableShaking");
+        this.shakingEnable = false;
+    }
+
+    shakeButton(){
+        if(this.shakingEnable){
+            this.main.shake();
+        }
     }
 }
 

@@ -5,8 +5,11 @@ import { GameConditions } from "./process";
 import { conf } from "./config.js";
 import { DashboardApp } from "./dashboard";
 
+const mainMethods = {
+    shake:undefined
+}
 
-const proc = new GameConditions(conf.conditions);
+const proc = new GameConditions(conf.conditions, mainMethods);
 
 const procHandlerMixin = {
     __proto__: proc,
@@ -45,8 +48,17 @@ const boardHandlerMixin = {
 Object.assign(GraphicsApp.prototype, boardHandlerMixin);
 const g = new GraphicsApp(conf.graphics);
 
-const d = new DashboardApp(conf.dashboard);
 
+const procDashboardHandlerMixin = {
+    __proto__: proc,
+
+    shakeButton(){return super.shakeButton.bind(proc)},
+}
+
+Object.assign(DashboardApp.prototype, procDashboardHandlerMixin);
+
+const d = new DashboardApp(conf.dashboard);
+mainMethods.shake = g.shake.bind(g);
 // --------------------------------------------------------
 g.fillAll();
 g.shake();
