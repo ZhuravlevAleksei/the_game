@@ -6,7 +6,9 @@ import { conf } from "./config.js";
 import { DashboardApp } from "./dashboard";
 
 const mainMethods = {
-    shake:undefined
+    shake:undefined,
+    showScore:undefined,
+    showClick:undefined
 }
 
 const proc = new GameConditions(conf.conditions, mainMethods);
@@ -59,9 +61,12 @@ Object.assign(DashboardApp.prototype, procDashboardHandlerMixin);
 
 const d = new DashboardApp(conf.dashboard);
 mainMethods.shake = g.shake.bind(g);
+mainMethods.showScore = d.showScore.bind(d);
+mainMethods.showClick = d.showClick.bind(d);
 // --------------------------------------------------------
 g.fillAll();
-g.shake();
+
+proc.init();
 
 const mainProc = new StateMachine({
     init: "init",

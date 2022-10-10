@@ -15,13 +15,18 @@ class GameConditions{
         this.main = main;
     }
 
+    init(){
+        this.main.shake();
+        this.main.showScore(this.scoreToWin - this.blastCount);
+        this.main.showClick(this.clickLimit - this.clickCount);
+    }
+
     clickCounter(number){
         this.clickCount += 1;
         this.blastCount += number;
 
-        console.log(`clickCount ${this.clickLimit - this.clickCount}`);
-
-        console.log(`blastCount ${this.scoreToWin - this.blastCount}`);
+        this.main.showScore(this.scoreToWin - this.blastCount);
+        this.main.showClick(this.clickLimit - this.clickCount);
 
         if(this.blastCount >= this.scoreToWin){
             // winning

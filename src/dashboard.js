@@ -5,6 +5,8 @@ import shakeButtonOpenFile from '../static/shake-button-open.png';
 import shakeButtonCloseFile from '../static/shake-button-close.png';
 import dashboardFieldFile from '../static/dashboard-field.png';
 import scoreIndicatorFile from '../static/score-indicator.png';
+import textStyle from '../static/text.json';
+import scoreStyle from '../static/score.json';
 import getProperty from './utils'
 
 
@@ -40,6 +42,8 @@ class DashboardApp{
         document.body.appendChild(this.app.view);
 
         this._downloadField();
+
+        this._downloadText();
     }
 
     _downloadField(){
@@ -83,8 +87,62 @@ class DashboardApp{
         this.app.stage.addChild(this.shakeButtonOpen);
     }
 
+    _downloadText(){
+        this.styleText = new PIXI.TextStyle(textStyle);
+        this.textText = new PIXI.Text('Progress', this.styleText);
+        this.textText.x = 240;
+        this.textText.y = 30;
+        this.app.stage.addChild(this.textText);
+
+        this.scoreText = new PIXI.TextStyle(scoreStyle);
+        this.textScore = new PIXI.Text('0000', this.scoreText);
+        this.textScore.x = 285;
+        this.textScore.y = 410;
+        this.app.stage.addChild(this.textScore);
+
+        this.clickText = new PIXI.TextStyle(scoreStyle);
+        this.textClick = new PIXI.Text('0', this.clickText);
+        this.textClick.x = 357;
+        this.textClick.y = 255;
+        this.app.stage.addChild(this.textClick);
+    }
+
     _shakeButtonOnClick(){
         this.shakeButton()();
+    }
+
+    _textCoordinate(value){
+        let x;
+
+        if(value < 10){
+            x = 357;
+        }else if(value < 100){
+            x = 335;
+        }else if(value < 1000){
+            x = 305;
+        }
+
+        return x;
+    }
+
+    showScore(score){
+        this.textScore.x = this._textCoordinate(score);
+        
+        if(score < 0){
+            score = 0;
+        }
+
+        this.textScore.text = `${score}`;
+    }
+
+    showClick(click){
+        this.textClick.x = this._textCoordinate(click);
+        
+        if(click < 0){
+            click = 0;
+        }
+
+        this.textClick.text = `${click}`;
     }
 }
 
