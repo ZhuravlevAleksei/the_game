@@ -1,8 +1,7 @@
-import getProperty from './utils'
+import getProperty from "./utils";
 
-
-class GameConditions{
-    constructor(config, main){
+class GameConditions {
+    constructor(config, main) {
         this.scoreToWin = getProperty("scoreToWin", config);
         this.clickLimit = getProperty("clickLimit", config);
         this.shakeLimit = getProperty("shakeLimit", config);
@@ -17,24 +16,24 @@ class GameConditions{
         this.main = main;
     }
 
-    init(){
+    init() {
         this.main.shake();
         this.main.showScore(this.scoreToWin - this.blastCount);
         this.main.showClick(this.clickLimit - this.clickCount);
     }
 
-    clickCounter(number){
+    clickCounter(number) {
         this.clickCount += 1;
         this.blastCount += number;
 
-        if(this.blastCount >= this.scoreToWin){
+        if (this.blastCount >= this.scoreToWin) {
             // winning
             this.main.lockTiles();
             this.main.winningEffect();
-            return
+            return;
         }
 
-        if(this.clickCount >= this.clickLimit){
+        if (this.clickCount >= this.clickLimit) {
             // losing
             this.main.lockTiles();
             this.main.losingEffect();
@@ -43,12 +42,14 @@ class GameConditions{
 
         this.main.showScore(this.scoreToWin - this.blastCount);
         this.main.showClick(this.clickLimit - this.clickCount);
-        this.main.showProgress(Math.round((this.blastCount / this.scoreToWin) * 100));
+        this.main.showProgress(
+            Math.round((this.blastCount / this.scoreToWin) * 100)
+        );
     }
 
     // Shaking --------------------------------------------
-    enableShaking(){
-        if(this.shakeCounter >= this.shakeLimit){
+    enableShaking() {
+        if (this.shakeCounter >= this.shakeLimit) {
             this.main.lockTiles();
             this.main.losingEffect();
             return;
@@ -58,19 +59,19 @@ class GameConditions{
         this.main.shakeButtonEffect();
     }
 
-    disableShaking(){
+    disableShaking() {
         this.shakingEnable = false;
     }
 
-    shakeButton(){
-        if(this.shakingEnable){
+    shakeButton() {
+        if (this.shakingEnable) {
             this.main.shake();
             this.shakeCounter += 1;
         }
     }
 
-    checkSuperTileMode(counter){
-        if (counter >= this.supetTileLimit){
+    checkSuperTileMode(counter) {
+        if (counter >= this.supetTileLimit) {
             return true;
         }
 
@@ -78,4 +79,4 @@ class GameConditions{
     }
 }
 
-export {GameConditions}
+export { GameConditions };

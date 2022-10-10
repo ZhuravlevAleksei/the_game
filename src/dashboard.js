@@ -1,19 +1,17 @@
 import * as PIXI from "pixi.js";
-import progressBarFile from '../static/progress-bar.png';
-import progressLineLeftFile from '../static/progress-line-left.png';
-import progressLineRightFile from '../static/progress-line-right.png';
-import progressLineCenterFile from '../static/progress-line-center.png';
-import shakeButtonOpenFile from '../static/shake-button-open.png';
-import shakeButtonCloseFile from '../static/shake-button-close.png';
-import dashboardFieldFile from '../static/dashboard-field.png';
-import scoreIndicatorFile from '../static/score-indicator.png';
-import textStyle from '../static/text.json';
-import scoreStyle from '../static/score.json';
-import getProperty from './utils'
+import progressBarFile from "../static/progress-bar.png";
+import progressLineLeftFile from "../static/progress-line-left.png";
+import progressLineRightFile from "../static/progress-line-right.png";
+import progressLineCenterFile from "../static/progress-line-center.png";
+import shakeButtonCloseFile from "../static/shake-button-close.png";
+import dashboardFieldFile from "../static/dashboard-field.png";
+import scoreIndicatorFile from "../static/score-indicator.png";
+import textStyle from "../static/text.json";
+import scoreStyle from "../static/score.json";
+import getProperty from "./utils";
 
-
-class DashboardApp{
-    constructor(config){
+class DashboardApp {
+    constructor(config) {
         this.width = getProperty("canvasWidth", config);
         this.height = getProperty("canvasHeight", config);
         this.backgroundColor = getProperty("backgroundColor", config);
@@ -22,11 +20,17 @@ class DashboardApp{
         this.progressBarHeight = getProperty("Height", config.progressBar);
         this.progressBarX = getProperty("X", config.progressBar);
         this.progressBarY = getProperty("Y", config.progressBar);
-        this.progressLineStart = getProperty("progressLineStart", config.progressBar);
+        this.progressLineStart = getProperty(
+            "progressLineStart",
+            config.progressBar
+        );
         this.progressLineW = getProperty("progressLineW", config.progressBar);
 
         this.scoreIndicatorWidth = getProperty("Width", config.scoreIndicator);
-        this.scoreIndicatorHeight = getProperty("Height", config.scoreIndicator);
+        this.scoreIndicatorHeight = getProperty(
+            "Height",
+            config.scoreIndicator
+        );
         this.scoreIndicatorX = getProperty("X", config.scoreIndicator);
         this.scoreIndicatorY = getProperty("Y", config.scoreIndicator);
 
@@ -38,7 +42,7 @@ class DashboardApp{
         this.app = new PIXI.Application({
             width: this.width,
             height: this.height,
-            backgroundColor: this.backgroundColor
+            backgroundColor: this.backgroundColor,
         });
 
         this.ticker = PIXI.Ticker.shared;
@@ -50,7 +54,7 @@ class DashboardApp{
         this._downloadText();
     }
 
-    _downloadField(){
+    _downloadField() {
         this.field = PIXI.Sprite.from(dashboardFieldFile);
 
         this.field.width = this.width;
@@ -78,7 +82,7 @@ class DashboardApp{
         this.app.stage.addChild(this.scoreIndicator);
 
         this.shakeButtonOpen = PIXI.Sprite.from(shakeButtonCloseFile);
-        this.shakeButtonOpen.anchor.set(0.5,0.5);
+        this.shakeButtonOpen.anchor.set(0.5, 0.5);
         this.shakeButtonOpen.width = this.shakeButtonWidth;
         this.shakeButtonOpen.height = this.shakeButtonHeight;
         this.shakeButtonOpen.x = this.shakeButtonX;
@@ -87,7 +91,10 @@ class DashboardApp{
 
         this.shakeButtonOpen.interactive = true;
         this.shakeButtonOpen.buttonMode = true;
-        this.shakeButtonOpen.on('pointerdown', this._shakeButtonOnClick.bind(this));
+        this.shakeButtonOpen.on(
+            "pointerdown",
+            this._shakeButtonOnClick.bind(this)
+        );
 
         this.app.stage.addChild(this.shakeButtonOpen);
 
@@ -113,131 +120,126 @@ class DashboardApp{
         this.app.stage.addChild(this.progressLineRight);
     }
 
-    _downloadText(){
+    _downloadText() {
         this.styleText = new PIXI.TextStyle(textStyle);
-        this.textText = new PIXI.Text('Progress', this.styleText);
+        this.textText = new PIXI.Text("Progress", this.styleText);
         this.textText.x = 240;
         this.textText.y = 30;
         this.app.stage.addChild(this.textText);
 
         this.scoreText = new PIXI.TextStyle(scoreStyle);
-        this.textScore = new PIXI.Text('0000', this.scoreText);
+        this.textScore = new PIXI.Text("0000", this.scoreText);
         this.textScore.x = 285;
         this.textScore.y = 410;
         this.app.stage.addChild(this.textScore);
 
         this.clickText = new PIXI.TextStyle(scoreStyle);
-        this.textClick = new PIXI.Text('0', this.clickText);
+        this.textClick = new PIXI.Text("0", this.clickText);
         this.textClick.x = 357;
         this.textClick.y = 255;
         this.app.stage.addChild(this.textClick);
 
         this.winningText = new PIXI.TextStyle(scoreStyle);
-        this.textWinning = new PIXI.Text('WIN', this.winningText);
+        this.textWinning = new PIXI.Text("WIN", this.winningText);
         this.textWinning.style.fontSize = 100;
         this.textWinning.style.fill = 0xff617e;
         this.textWinning.x = 150;
         this.textWinning.y = 255;
 
         this.losingText = new PIXI.TextStyle(scoreStyle);
-        this.textLosing = new PIXI.Text('LOSS', this.losingText);
+        this.textLosing = new PIXI.Text("LOSS", this.losingText);
         this.textLosing.style.fontSize = 100;
         this.textLosing.style.fill = 0xf1d074;
         this.textLosing.x = 140;
         this.textLosing.y = 255;
     }
 
-    _shakeButtonOnClick(){
+    _shakeButtonOnClick() {
         this.shakeButton()();
     }
 
-    _textCoordinate(value){
+    _textCoordinate(value) {
         let x;
 
-        if(value < 10){
+        if (value < 10) {
             x = 357;
-        }else if(value < 100){
+        } else if (value < 100) {
             x = 335;
-        }else if(value < 1000){
+        } else if (value < 1000) {
             x = 305;
         }
 
         return x;
     }
 
-    showScore(score){
+    showScore(score) {
         this.textScore.x = this._textCoordinate(score);
-        
-        if(score < 0){
+
+        if (score < 0) {
             score = 0;
         }
 
         this.textScore.text = `${score}`;
     }
 
-    showClick(click){
+    showClick(click) {
         this.textClick.x = this._textCoordinate(click);
-        
-        if(click < 0){
+
+        if (click < 0) {
             click = 0;
         }
 
         this.textClick.text = `${click}`;
     }
 
-    showProgress(progressPercentage){
-        if(progressPercentage > 100){
+    showProgress(progressPercentage) {
+        if (progressPercentage > 100) {
             progressPercentage = 100;
         }
 
         const x = (500 / 100) * progressPercentage;
-        this.progressLineRight.x = this.progressLineStart + this.progressLineW + x;
+        this.progressLineRight.x =
+            this.progressLineStart + this.progressLineW + x;
         this.progressLineCenter.width = this.progressLineW + x;
     }
 
-    shakeButtonEffect(){
+    shakeButtonEffect() {
         this.ticker.add(this._shakeButtonEffectHandler, this);
     }
 
-    _shakeButtonEffectHandler(){
+    _shakeButtonEffectHandler() {
         this.shakeButtonOpen.angle += 5;
 
-        if(this.shakeButtonOpen.angle >= 90){
+        if (this.shakeButtonOpen.angle >= 90) {
             this.shakeButtonOpen.angle = 0;
             this.ticker.remove(this._shakeButtonEffectHandler, this);
         }
     }
 
-    _hide(){
-        if(this.shakeButtonOpen){this.shakeButtonOpen.destroy();}
-        if(this.scoreIndicator){this.scoreIndicator.destroy();}
-        if(this.textClick){this.textClick.destroy();}
-        if(this.textScore){this.textScore.destroy();}
+    _hide() {
+        if (this.shakeButtonOpen) {
+            this.shakeButtonOpen.destroy();
+        }
+        if (this.scoreIndicator) {
+            this.scoreIndicator.destroy();
+        }
+        if (this.textClick) {
+            this.textClick.destroy();
+        }
+        if (this.textScore) {
+            this.textScore.destroy();
+        }
     }
 
-    winningEffect(){
+    winningEffect() {
         this._hide();
         this.app.stage.addChild(this.textWinning);
-        // this.ticker.add(this._winningEffectHandler, this);
     }
 
-    // _winningEffectHandler(){
-    //     if(true){
-    //         this.ticker.remove(this._winningEffectHandler, this);
-    //     }
-    // }
-
-    losingEffect(){
+    losingEffect() {
         this._hide();
         this.app.stage.addChild(this.textLosing);
-        // this.ticker.add(this._losingEffectHandler, this);
     }
-
-    // _losingEffectHandler(){
-    //     if(true){
-    //         this.ticker.remove(this._losingEffectHandler, this);
-    //     }
-    // }
 }
 
-export {DashboardApp};
+export { DashboardApp };

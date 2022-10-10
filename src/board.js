@@ -1,11 +1,10 @@
 import getProperty from "./utils";
 
-
 class GameBoard {
     constructor(config, blastTileCount) {
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
-        if(blastTileCount === undefined){
+        if (blastTileCount === undefined) {
             throw new Error(`Property "blastTileCount" is not defined`);
         }
 
@@ -32,8 +31,8 @@ class GameBoard {
         return board;
     }
 
-    addCells(tileArray){
-        for(let t = 0; t < tileArray.length; t++){
+    addCells(tileArray) {
+        for (let t = 0; t < tileArray.length; t++) {
             let tile = tileArray[t];
             this.board[tile.row][tile.col] = tile;
         }
@@ -47,14 +46,16 @@ class GameBoard {
     }
 
     _moveCell(coordFrom, coordTo) {
-        this.board[coordTo.row][coordTo.col] = this.board[coordFrom.row][coordFrom.col];
+        this.board[coordTo.row][coordTo.col] =
+            this.board[coordFrom.row][coordFrom.col];
         this.board[coordFrom.row][coordFrom.col] = undefined;
     }
 
-    changeCells(coordFrom, coordTo){
+    changeCells(coordFrom, coordTo) {
         const tmp = this.board[coordTo.row][coordTo.col];
-        this.board[coordTo.row][coordTo.col] = this.board[coordFrom.row][coordFrom.col];
-        
+        this.board[coordTo.row][coordTo.col] =
+            this.board[coordFrom.row][coordFrom.col];
+
         this.board[coordFrom.row][coordFrom.col] = tmp;
     }
 
@@ -188,7 +189,7 @@ class GameBoard {
     _floorEmpty() {
         const cellsPosition = this._searchForEmptiesInBoard(0);
 
-        if(cellsPosition.length == 0){
+        if (cellsPosition.length == 0) {
             return cellsPosition;
         }
 
@@ -198,7 +199,11 @@ class GameBoard {
 
         const colSliced = [];
 
-        for (let c = cellsPosition[0].col; c <= cellsPosition[cellsPosition.length - 1].col; c++) {
+        for (
+            let c = cellsPosition[0].col;
+            c <= cellsPosition[cellsPosition.length - 1].col;
+            c++
+        ) {
             let f = cellsPosition.filter((n) => {
                 return n.col == c;
             });
@@ -213,7 +218,7 @@ class GameBoard {
         const fl = [];
 
         for (let c = 0; c < colSliced.length; c++) {
-            if(colSliced[c].length == 0){
+            if (colSliced[c].length == 0) {
                 continue;
             }
 
@@ -247,22 +252,22 @@ class GameBoard {
         return cells;
     }
 
-    searchForEmptiesInRows(row){
+    searchForEmptiesInRows(row) {
         const topCells = [];
 
-        for(let c = 0; c < this.board[row].length; c++){
-            if(this.board[row][c] === undefined){
-                topCells.push({row:row, col:c});
+        for (let c = 0; c < this.board[row].length; c++) {
+            if (this.board[row][c] === undefined) {
+                topCells.push({ row: row, col: c });
             }
         }
 
         return topCells;
     }
 
-    _searchForEmptiesInBoard(topRow){
+    _searchForEmptiesInBoard(topRow) {
         let emptyAll = [];
 
-        for(let r = topRow; r < this.tilesRowCount; r++){
+        for (let r = topRow; r < this.tilesRowCount; r++) {
             let empty = this.searchForEmptiesInRows(r);
             emptyAll = emptyAll.concat(empty);
         }
@@ -282,14 +287,14 @@ class GameBoard {
         return colls;
     }
 
-    superTileBlast(superCell){
+    superTileBlast(superCell) {
         let blastCount = 0;
         const row = superCell.row;
 
-        for(let c = 0; c < this.tilesRowCount; c++){
+        for (let c = 0; c < this.tilesRowCount; c++) {
             let cell = this.board[row][c];
 
-            if(cell === undefined){
+            if (cell === undefined) {
                 continue;
             }
 
@@ -301,7 +306,7 @@ class GameBoard {
         return blastCount;
     }
 
-    blast(tile){
+    blast(tile) {
         let blastCount = 0;
 
         // search --------------------------
@@ -309,20 +314,20 @@ class GameBoard {
         cells = cells.concat(this._search(tile));
 
         if (cells.length < this.blastTileCount) {
-            return {counter: false, super: false};
+            return { counter: false, super: false };
         }
 
         // blast ---------------------------
         for (let i = 0; i < cells.length; i++) {
-            if(cells[i] === undefined){
+            if (cells[i] === undefined) {
                 continue;
             }
 
-            if(cells[i].superTile){
+            if (cells[i].superTile) {
                 blastCount += this.superTileBlast(cells[i]);
                 continue;
             }
-            
+
             cells[i].delete();
             this._cleanCell(cells[i]);
             blastCount += 1;
@@ -330,7 +335,7 @@ class GameBoard {
 
         this.clickCounter()(blastCount);
 
-        let result = {counter: true, super: false};
+        let result = { counter: true, super: false };
 
         result.super = this.checkSuperTileMode()(cells.length);
 
@@ -359,27 +364,27 @@ class GameBoard {
         return this.cursor;
     }
 
-    nextTile(){
+    nextTile() {
         const cell = this.nextCell();
 
-        if(cell === undefined){
+        if (cell === undefined) {
             return null;
         }
 
         return this.board[cell.row][cell.col];
     }
 
-    resetCursor(){
+    resetCursor() {
         this.cursor = { row: 0, col: 0 };
         return this.cursor;
     }
 
-    resetTileCursor(){
+    resetTileCursor() {
         const cell = this.resetCursor();
         return this.board[cell.row][cell.col];
     }
 
-    getCell(position){
+    getCell(position) {
         return this.board[position.row][position.col];
     }
 
@@ -393,7 +398,7 @@ class GameBoard {
 
             let cells = this._search(tile);
 
-            if ((cells.length + 1) >= this.blastTileCount) {
+            if (cells.length + 1 >= this.blastTileCount) {
                 this.disableShaking()();
                 return;
             }
@@ -404,13 +409,13 @@ class GameBoard {
         this.enableShaking()();
     }
 
-    shakeBoard(){
+    shakeBoard() {
         let cell = this.resetCursor();
 
-        while(cell){
+        while (cell) {
             let positionTo = {
                 row: Math.floor(Math.random() * this.tilesRowCount),
-                col: Math.floor(Math.random() * this.tilesRowCount)
+                col: Math.floor(Math.random() * this.tilesRowCount),
             };
 
             let tileTo = this.getCell(positionTo);

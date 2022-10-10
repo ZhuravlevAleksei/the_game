@@ -1,13 +1,12 @@
 import * as PIXI from "pixi.js";
-import tileFile from '../static/wt.png';
-import fieldFile from '../static/field.png';
-import getProperty from './utils'
+import tileFile from "../static/wt.png";
+import fieldFile from "../static/field.png";
+import getProperty from "./utils";
 
 let spritesTintSet = undefined;
 let tileWidth = undefined;
 let tileHeight = undefined;
 let tileClickHandler = undefined;
-
 
 class GraphicsApp {
     constructor(config) {
@@ -18,7 +17,8 @@ class GraphicsApp {
         spritesTintSet = getProperty("spritesTintSet", config);
 
         this.paddingPx = Math.floor(
-            (this.width / 100) * getProperty("paddingWidthPercent", config));
+            (this.width / 100) * getProperty("paddingWidthPercent", config)
+        );
 
         this.tilesRowCount = getProperty("tilesRowCount", config);
 
@@ -27,15 +27,15 @@ class GraphicsApp {
         const gapSpace = (this.tilesRowCount - 1) * this.tilePxGap;
 
         tileWidth = Math.round(
-            ((this.width - (this.paddingPx * 2) - gapSpace) / 
-            this.tilesRowCount));
+            (this.width - this.paddingPx * 2 - gapSpace) / this.tilesRowCount
+        );
 
         tileHeight = Math.round((this.height / this.width) * tileWidth);
 
         this.app = new PIXI.Application({
             width: this.width,
             height: this.height,
-            backgroundColor: this.backgroundColor
+            backgroundColor: this.backgroundColor,
         });
 
         document.body.appendChild(this.app.view);
@@ -43,16 +43,16 @@ class GraphicsApp {
         this._downloadField();
     }
 
-    _onClick(tile){
+    _onClick(tile) {
         const blast = this.blast()(tile);
 
-        if(blast.counter == false){
+        if (blast.counter == false) {
             return;
         }
 
         // Fill all cells -------------------
         let limitCounter = this.tilesRowCount + 1;
-    
+
         while (limitCounter--) {
             // The fall on floor ------------------
             let colls = this.collsToFall()();
@@ -64,7 +64,7 @@ class GraphicsApp {
             for (let c = 0; c < colls.length; c++) {
                 this._moveTiles(colls[c]);
             }
-    
+
             // Fill top row ----------------------
             const emptyTopCells = this.searchForEmptiesInRows()(0);
 
@@ -77,22 +77,28 @@ class GraphicsApp {
         this.checkBlastUnablity()();
     }
 
-    fillAll(){
-        for(let r = 0; r < this.tilesRowCount; r++){
+    fillAll() {
+        for (let r = 0; r < this.tilesRowCount; r++) {
             let emptyRowCells = this.searchForEmptiesInRows()(r);
             let tiles = this.addTiles(emptyRowCells);
             this.addCells()(tiles);
         }
     }
 
-    _position(pos){
-        const tx = this.paddingPx + (pos.col * (tileWidth + this.tilePxGap)) + (tileWidth / 2);
-        const ty = this.paddingPx + (pos.row * (tileHeight + this.tilePxGap)) + (tileHeight / 2);
+    _position(pos) {
+        const tx =
+            this.paddingPx +
+            pos.col * (tileWidth + this.tilePxGap) +
+            tileWidth / 2;
+        const ty =
+            this.paddingPx +
+            pos.row * (tileHeight + this.tilePxGap) +
+            tileHeight / 2;
 
-        return {tx:tx, ty:ty, row:pos.row, col:pos.col};
+        return { tx: tx, ty: ty, row: pos.row, col: pos.col };
     }
 
-    _downloadField(){
+    _downloadField() {
         this.field = PIXI.Sprite.from(fieldFile);
 
         this.field.width = this.width;
@@ -101,10 +107,10 @@ class GraphicsApp {
         this.app.stage.addChild(this.field);
     }
 
-    _addTile(position, colorIndex, superTile){
+    _addTile(position, colorIndex, superTile) {
         const coordinate = this._position(position);
 
-        if(colorIndex === undefined){
+        if (colorIndex === undefined) {
             colorIndex = Math.floor(Math.random() * spritesTintSet.length);
         }
 
@@ -114,33 +120,38 @@ class GraphicsApp {
             coordinate.ty,
             position.row,
             position.col,
-            superTile);
+            superTile
+        );
 
         this.app.stage.addChild(tile.tile);
 
-        if(superTile){
+        if (superTile) {
             tile.superT();
-        }else{
+        } else {
             tile.show();
         }
 
         return tile;
     }
 
-    addTiles(emptyCells, blast){
+    addTiles(emptyCells, blast) {
         const tiles = [];
         let superTileIndex = -1;
 
-        if(blast){
-            if(emptyCells.length == 1){
+        if (blast) {
+            if (emptyCells.length == 1) {
                 superTileIndex = 0;
-            }else{
+            } else {
                 superTileIndex = Math.floor(Math.random() * emptyCells.length);
             }
         }
 
         for (let c = 0; c < emptyCells.length; c++) {
-            const t = this._addTile(emptyCells[c], undefined, (c === superTileIndex));
+            const t = this._addTile(
+                emptyCells[c],
+                undefined,
+                c === superTileIndex
+            );
 
             tiles.push(t);
         }
@@ -148,19 +159,19 @@ class GraphicsApp {
         return tiles;
     }
 
-    _moveTile(tile, position){
+    _moveTile(tile, position) {
         const coordinate = this._position(position);
 
-        tile.move(coordinate)
+        tile.move(coordinate);
     }
 
-    _moveTiles(tilesArr){
+    _moveTiles(tilesArr) {
         for (let c = 0; c < tilesArr.length; c++) {
             this._moveTile(tilesArr[c].tile, tilesArr[c].to);
         }
     }
 
-    shake(){
+    shake() {
         this.shakeBoard()();
         let tile = this.resetTileCursor()();
 
@@ -170,8 +181,8 @@ class GraphicsApp {
                 continue;
             }
 
-            if(tile.toMove){
-                let positionTo = {row: tile.row, col: tile.col};
+            if (tile.toMove) {
+                let positionTo = { row: tile.row, col: tile.col };
                 this._moveTile(tile, positionTo);
             }
 
@@ -179,7 +190,7 @@ class GraphicsApp {
         }
     }
 
-    lockTiles(){
+    lockTiles() {
         let tile = this.resetTileCursor()();
 
         while (tile !== null) {
@@ -195,11 +206,11 @@ class GraphicsApp {
     }
 }
 
-class Tile{
-    constructor(colorIndex, x, y, row, col, superTile){
+class Tile {
+    constructor(colorIndex, x, y, row, col, superTile) {
         let tile = PIXI.Sprite.from(tileFile);
 
-        tile.anchor.set(0.5,0.5);
+        tile.anchor.set(0.5, 0.5);
 
         tile.x = x;
         tile.y = y;
@@ -213,7 +224,7 @@ class Tile{
 
         this.tile.interactive = true;
         this.tile.buttonMode = true;
-        this.tile.on('pointerdown', this._tileOnClick.bind(this));
+        this.tile.on("pointerdown", this._tileOnClick.bind(this));
 
         this.col = col;
         this.row = row;
@@ -224,14 +235,14 @@ class Tile{
         return this;
     }
 
-    superT(){
+    superT() {
         this.timeElapsed = 0;
 
-        if(this.tile.width < tileWidth){
+        if (this.tile.width < tileWidth) {
             this.tile.width = tileWidth;
         }
 
-        if(this.tile.height < tileHeight){
+        if (this.tile.height < tileHeight) {
             this.tile.height = tileHeight;
         }
 
@@ -239,76 +250,74 @@ class Tile{
         this.ticker.add(this._superTHandler, this);
     }
 
-    _superTHandler(){
-        if(this.timeElapsed < 2){
+    _superTHandler() {
+        if (this.timeElapsed < 2) {
             this.timeElapsed += this.ticker.deltaTime;
             return;
-        }else{
+        } else {
             this.timeElapsed = 0;
         }
 
-        if(this.tile.width < tileWidth){
+        if (this.tile.width < tileWidth) {
             this.tile.width += 1;
-        }else{
+        } else {
             this.tile.width = tileWidth - 6;
         }
-        
-        if(this.tile.height < tileHeight){
+
+        if (this.tile.height < tileHeight) {
             this.tile.height += 1;
-        }else{
+        } else {
             this.tile.height = tileHeight - 6;
         }
     }
 
-    _tileOnClick(){
-        tileClickHandler(this)
+    _tileOnClick() {
+        tileClickHandler(this);
     }
 
-    delete(){
+    delete() {
         this.blast();
     }
 
-    _destroy(){
-        if(this.ticker){
+    _destroy() {
+        if (this.ticker) {
             this.ticker.remove(this._superTHandler, this);
             this.ticker.destroy();
         }
 
-        if(this.tile){
-            if(this.tile._texture){
+        if (this.tile) {
+            if (this.tile._texture) {
                 this.tile.destroy();
             }
         }
     }
 
-    blast(){
-        if(this.superTile){
-            if(this.ticker){
+    blast() {
+        if (this.superTile) {
+            if (this.ticker) {
                 this.ticker.remove(this._superTHandler, this);
             }
         }
         this.tile.tint = 0xffffff;
-        this.tile.alpha = 0.4
+        this.tile.alpha = 0.4;
 
         this.ticker = PIXI.Ticker.shared;
         this.ticker.add(this._blastHandler, this);
     }
 
-    _blastHandler(){
-        if(this.tile.width < tileWidth * 3){
+    _blastHandler() {
+        if (this.tile.width < tileWidth * 3) {
             this.tile.width += 20;
-
-        }else{
+        } else {
             this.ticker.remove(this._blastHandler, this);
             this.ticker.destroy();
             this._destroy();
             return;
         }
-        
-        if(this.tile.height < tileHeight * 3){
-            this.tile.height += 20;
 
-        }else{
+        if (this.tile.height < tileHeight * 3) {
+            this.tile.height += 20;
+        } else {
             this.ticker.remove(this._blastHandler, this);
             this.ticker.destroy();
             this._destroy();
@@ -316,8 +325,8 @@ class Tile{
         }
     }
 
-    lock(){
-        if(this.ticker){
+    lock() {
+        if (this.ticker) {
             this.ticker.destroy();
         }
 
@@ -325,15 +334,15 @@ class Tile{
         this.tile.buttonMode = false;
     }
 
-    move(coordinate){
+    move(coordinate) {
         this.tx = coordinate.tx;
         this.ty = coordinate.ty;
         this.row = coordinate.row;
         this.col = coordinate.col;
         this.toMove = false;
 
-        if(this.superTile){
-            if(this.ticker){
+        if (this.superTile) {
+            if (this.ticker) {
                 this.ticker.remove(this._superTHandler, this);
             }
 
@@ -345,39 +354,39 @@ class Tile{
         this.ticker.add(this._moveHandler, this);
     }
 
-    _moveHandler(){
+    _moveHandler() {
         let diffX = this.tile.x - this.tx;
         let diffY = this.tile.y - this.ty;
 
-        if((diffX == 0) && (diffY == 0)){
+        if (diffX == 0 && diffY == 0) {
             this.ticker.remove(this._moveHandler, this);
 
-            if(this.superTile){
+            if (this.superTile) {
                 this.superT();
             }
             return;
         }
 
-        if(diffX != 0){
-            let xDiff = this.tx - this.tile.x
+        if (diffX != 0) {
+            let xDiff = this.tx - this.tile.x;
             let stepX = 1;
 
-            if(Math.abs(xDiff) < 5){
+            if (Math.abs(xDiff) < 5) {
                 stepX = Math.ceil((this.tx - this.tile.x) / 1);
-            }else{
+            } else {
                 stepX = Math.ceil((this.tx - this.tile.x) / 5);
             }
-            
+
             this.tile.x = this.tile.x + stepX;
         }
 
-        if(diffY != 0){
-            let yDiff = this.ty - this.tile.y
+        if (diffY != 0) {
+            let yDiff = this.ty - this.tile.y;
             let stepY = 1;
 
-            if(Math.abs(yDiff) < 5){
+            if (Math.abs(yDiff) < 5) {
                 stepY = Math.ceil((this.ty - this.tile.y) / 1);
-            }else{
+            } else {
                 stepY = Math.ceil((this.ty - this.tile.y) / 5);
             }
 
@@ -385,44 +394,44 @@ class Tile{
         }
     }
 
-    show(){
+    show() {
         this.ticker = PIXI.Ticker.shared;
         this.ticker.add(this._showHandler, this);
     }
 
-    _showHandler(){
+    _showHandler() {
         let diffWidth = tileWidth - this.tile.width;
         let diffHeight = tileHeight - this.tile.height;
 
-        if((diffWidth == 0) && (diffHeight == 0)){
+        if (diffWidth == 0 && diffHeight == 0) {
             this.ticker.remove(this._showHandler, this);
-            this.ticker.destroy()
+            this.ticker.destroy();
 
-            if(this.superTile){
+            if (this.superTile) {
                 this.superT();
             }
             return;
         }
 
-        if(diffWidth != 0){
+        if (diffWidth != 0) {
             let stepWidth;
 
-            if(Math.abs(diffWidth) < 2){
+            if (Math.abs(diffWidth) < 2) {
                 stepWidth = Math.ceil((tileWidth - this.tile.width) / 1);
-            }else{
+            } else {
                 stepWidth = Math.ceil((tileWidth - this.tile.width) / 2);
             }
 
             this.tile.width = this.tile.width + stepWidth;
         }
 
-        if(diffHeight != 0){
+        if (diffHeight != 0) {
             let stepHeight;
 
-            if(Math.abs(diffHeight) < 5){
+            if (Math.abs(diffHeight) < 5) {
                 stepHeight = Math.ceil((tileHeight - this.tile.height) / 1);
-            }else{
-                stepHeight = Math.ceil((tileHeight- this.tile.height) / 5);
+            } else {
+                stepHeight = Math.ceil((tileHeight - this.tile.height) / 5);
             }
 
             this.tile.height = this.tile.height + stepHeight;
@@ -430,4 +439,4 @@ class Tile{
     }
 }
 
-export {GraphicsApp}
+export { GraphicsApp };
