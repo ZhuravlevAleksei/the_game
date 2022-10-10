@@ -27,6 +27,7 @@ class GameConditions{
 
         this.main.showScore(this.scoreToWin - this.blastCount);
         this.main.showClick(this.clickLimit - this.clickCount);
+        this.main.showProgress(Math.round((this.blastCount / this.scoreToWin) * 100));
 
         if(this.blastCount >= this.scoreToWin){
             // winning

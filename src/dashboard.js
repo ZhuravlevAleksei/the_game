@@ -1,6 +1,8 @@
 import * as PIXI from "pixi.js";
 import progressBarFile from '../static/progress-bar.png';
-import progressLine100File from '../static/progress-line-100.png';
+import progressLineLeftFile from '../static/progress-line-left.png';
+import progressLineRightFile from '../static/progress-line-right.png';
+import progressLineCenterFile from '../static/progress-line-center.png';
 import shakeButtonOpenFile from '../static/shake-button-open.png';
 import shakeButtonCloseFile from '../static/shake-button-close.png';
 import dashboardFieldFile from '../static/dashboard-field.png';
@@ -20,6 +22,8 @@ class DashboardApp{
         this.progressBarHeight = getProperty("Height", config.progressBar);
         this.progressBarX = getProperty("X", config.progressBar);
         this.progressBarY = getProperty("Y", config.progressBar);
+        this.progressLineStart = getProperty("progressLineStart", config.progressBar);
+        this.progressLineW = getProperty("progressLineW", config.progressBar);
 
         this.scoreIndicatorWidth = getProperty("Width", config.scoreIndicator);
         this.scoreIndicatorHeight = getProperty("Height", config.scoreIndicator);
@@ -85,6 +89,27 @@ class DashboardApp{
         this.shakeButtonOpen.on('pointerdown', this._shakeButtonOnClick.bind(this));
 
         this.app.stage.addChild(this.shakeButtonOpen);
+
+        this.progressLineLeft = PIXI.Sprite.from(progressLineLeftFile);
+        this.progressLineLeft.width = 21;
+        this.progressLineLeft.height = 38;
+        this.progressLineLeft.x = 27;
+        this.progressLineLeft.y = 80;
+        this.app.stage.addChild(this.progressLineLeft);
+
+        this.progressLineCenter = PIXI.Sprite.from(progressLineCenterFile);
+        this.progressLineCenter.width = this.progressLineW;
+        this.progressLineCenter.height = 38;
+        this.progressLineCenter.x = this.progressLineStart;
+        this.progressLineCenter.y = 80;
+        this.app.stage.addChild(this.progressLineCenter);
+
+        this.progressLineRight = PIXI.Sprite.from(progressLineRightFile);
+        this.progressLineRight.width = 21;
+        this.progressLineRight.height = 38;
+        this.progressLineRight.x = this.progressLineStart + this.progressLineW;
+        this.progressLineRight.y = 80;
+        this.app.stage.addChild(this.progressLineRight);
     }
 
     _downloadText(){
@@ -143,6 +168,16 @@ class DashboardApp{
         }
 
         this.textClick.text = `${click}`;
+    }
+
+    showProgress(progressPercentage){
+        if(progressPercentage > 100){
+            progressPercentage = 100;
+        }
+
+        const x = (500 / 100) * progressPercentage;
+        this.progressLineRight.x = this.progressLineStart + this.progressLineW + x;
+        this.progressLineCenter.width = this.progressLineW + x;
     }
 }
 

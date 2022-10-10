@@ -8,7 +8,8 @@ import { DashboardApp } from "./dashboard";
 const mainMethods = {
     shake:undefined,
     showScore:undefined,
-    showClick:undefined
+    showClick:undefined,
+    showProgress:undefined
 }
 
 const proc = new GameConditions(conf.conditions, mainMethods);
@@ -63,6 +64,7 @@ const d = new DashboardApp(conf.dashboard);
 mainMethods.shake = g.shake.bind(g);
 mainMethods.showScore = d.showScore.bind(d);
 mainMethods.showClick = d.showClick.bind(d);
+mainMethods.showProgress = d.showProgress.bind(d);
 // --------------------------------------------------------
 g.fillAll();
 
