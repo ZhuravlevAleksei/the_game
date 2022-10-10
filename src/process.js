@@ -11,6 +11,7 @@ class GameConditions{
         this.clickCount = 0;
 
         this.shakingEnable = false;
+        this.shakeCounter = 0;
 
         this.main = main;
     }
@@ -44,6 +45,12 @@ class GameConditions{
 
     // Shaking --------------------------------------------
     enableShaking(){
+        if(this.shakeCounter >= this.shakeLimit){
+            this.main.losingEffect();
+            this.main.lockTiles();
+            return;
+        }
+
         this.shakingEnable = true;
         this.main.shakeButtonEffect();
     }
@@ -55,6 +62,7 @@ class GameConditions{
     shakeButton(){
         if(this.shakingEnable){
             this.main.shake();
+            this.shakeCounter += 1;
         }
     }
 }
