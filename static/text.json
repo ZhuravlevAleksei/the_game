@@ -1,0 +1,11 @@
+﻿{
+    "dropShadow": true,
+    "fontSize": 28,
+    "dropShadowColor": "#00539e",
+    "dropShadowDistance": 2,
+    "fill": "#f6f5f4",
+    "fontFamily": "Comic Sans MS",
+    "fontWeight": "bold",
+    "letterSpacing": 3,
+    "stroke": "#f6f5f4"
+}
