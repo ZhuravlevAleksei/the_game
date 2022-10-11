@@ -394,6 +394,7 @@ class GameBoard {
         while (tile !== null) {
             if (tile === undefined) {
                 tile = this.nextTile();
+                continue;
             }
 
             let cells = this._search(tile);
