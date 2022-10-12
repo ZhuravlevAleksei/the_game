@@ -194,7 +194,9 @@ class GameBoard {
         }
 
         cellsPosition.sort((a, b) => {
-            return a.col > b.col;
+            if (a.col > b.col) return 1;
+            if (a.col == b.col) return 0;
+            if (a.col < b.col) return -1;
         });
 
         const colSliced = [];
@@ -208,20 +210,22 @@ class GameBoard {
                 return n.col == c;
             });
 
-            f.sort((a, b) => {
-                return a.row < b.row;
+            if(f.length == 0){
+                continue;
+            }
+
+            let fSort = f.sort((a, b) => {
+                if (a.row < b.row) return 1;
+                if (a.row == b.row) return 0;
+                if (a.row > b.row) return -1;
             });
 
-            colSliced.push(f);
+            colSliced.push(fSort);
         }
 
         const fl = [];
 
         for (let c = 0; c < colSliced.length; c++) {
-            if (colSliced[c].length == 0) {
-                continue;
-            }
-
             fl.push({ row: colSliced[c][0].row, col: colSliced[c][0].col });
         }
 
